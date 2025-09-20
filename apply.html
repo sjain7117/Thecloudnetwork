@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Apply &mdash; The Cloud Network</title>
+    <meta
+      name="description"
+      content="Apply to The Cloud Network and join a community of bold builders prototyping the future of connected experiences."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrapper header-inner">
+        <a class="brand" href="index.html">The Cloud Network</a>
+        <nav class="primary-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="storyline.html">Storyline</a></li>
+            <li><a href="apply.html">Apply</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="apply-title">
+        <div class="wrapper hero-grid">
+          <div>
+            <h1 id="apply-title" class="hero-title" data-animate>
+              Join the crew designing the <span class="hero-highlight">next wave of connectivity</span>.
+            </h1>
+            <p class="hero-subtitle" data-animate>
+              Tell us about your interests and the experiments you’re eager to run. We review forms weekly and schedule
+              intro sessions with selected applicants.
+            </p>
+          </div>
+          <aside class="callout" data-animate>
+            <h3>Application cadence</h3>
+            <p class="text-muted">
+              Our recruitment happens in monthly cohorts. The strongest forms show a clear narrative, a project you want
+              to ship, and how you collaborate.
+            </p>
+            <div style="margin-top: 1.5rem">
+              <div class="metrics-grid">
+                <div class="metric-card">
+                  <strong>Week 1</strong>
+                  <span>Review &amp; invites</span>
+                </div>
+                <div class="metric-card">
+                  <strong>Week 2</strong>
+                  <span>Interview labs</span>
+                </div>
+                <div class="metric-card">
+                  <strong>Week 3</strong>
+                  <span>Build sprints</span>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="application-form">
+        <div class="wrapper split-layout">
+          <article>
+            <h2 id="application-form" class="section-title" data-animate>Application form</h2>
+            <p class="text-muted" data-animate>
+              This is an interest form. We’ll follow up with next steps and a build challenge if it feels like a fit. All
+              fields are required so we can learn how you think and collaborate.
+            </p>
+            <form class="form-card" data-mock-submit data-animate>
+              <div class="form-grid">
+                <div>
+                  <label for="name">Full name</label>
+                  <input id="name" name="name" type="text" placeholder="Jordan Rivera" required />
+                </div>
+                <div>
+                  <label for="email">Email</label>
+                  <input id="email" name="email" type="email" placeholder="you@cloud.network" required />
+                </div>
+                <div>
+                  <label for="portfolio">Portfolio or project link</label>
+                  <input id="portfolio" name="portfolio" type="url" placeholder="https://" required />
+                </div>
+                <div>
+                  <label for="focus">Focus area</label>
+                  <select id="focus" name="focus" required>
+                    <option value="" disabled selected>Select one</option>
+                    <option value="systems">Systems &amp; engineering</option>
+                    <option value="design">Design &amp; interaction</option>
+                    <option value="media">Media &amp; storytelling</option>
+                    <option value="ops">Operations &amp; partnerships</option>
+                  </select>
+                </div>
+              </div>
+              <div style="margin-top: 1.5rem">
+                <label for="why">What are you excited to build with us?</label>
+                <textarea id="why" name="why" placeholder="Sketch your narrative..." required></textarea>
+              </div>
+              <div style="margin-top: 1.5rem">
+                <label for="availability">Availability</label>
+                <textarea
+                  id="availability"
+                  name="availability"
+                  placeholder="Let us know your semester schedule or constraints."
+                  required
+                ></textarea>
+              </div>
+              <div style="margin-top: 2rem; display: flex; align-items: center; gap: 1.5rem">
+                <button class="button" type="submit">Submit Application</button>
+                <span class="text-muted" data-form-feedback aria-live="polite"></span>
+              </div>
+            </form>
+          </article>
+          <aside class="layer-card" data-animate>
+            <h3 style="margin-top: 0">What happens next</h3>
+            <ol class="text-muted" style="line-height: 1.8; padding-left: 1.25rem">
+              <li>We review your form within a week.</li>
+              <li>You’ll receive a short creative challenge.</li>
+              <li>We pair you with a squad for a live build session.</li>
+              <li>Final invites go out the same week.</li>
+            </ol>
+            <div class="callout" style="margin-top: 2rem">
+              <h3 style="margin-top: 0">Need a preview?</h3>
+              <p class="text-muted">
+                Attend one of our open studio nights. You can shadow a sprint, meet the crew, and see if the energy matches
+                your goals.
+              </p>
+              <a class="button secondary" href="about.html" style="margin-top: 1.5rem">Explore the studio</a>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrapper footer-inner">
+        <span>&copy; <span id="year">2024</span> The Cloud Network. Crafted in the dorm lab.</span>
+        <nav class="footer-nav" aria-label="Footer navigation">
+          <a href="index.html">Home</a>
+          <a href="storyline.html">Storyline</a>
+          <a href="about.html">About</a>
+        </nav>
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+    <script src="assets/js/main.js" defer></script>
+  </body>
+</html>
