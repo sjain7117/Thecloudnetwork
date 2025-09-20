@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>The Cloud Network</title>
+    <meta
+      name="description"
+      content="The Cloud Network is a community of builders exploring the future of connected experiences."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrapper header-inner">
+        <a class="brand" href="index.html">The Cloud Network</a>
+        <nav class="primary-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="storyline.html">Storyline</a></li>
+            <li><a href="apply.html">Apply</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="wrapper hero-grid">
+          <div>
+            <h1 id="hero-title" class="hero-title" data-animate>
+              A club for the bold builders shaping the next <span class="hero-highlight">networked future</span>.
+            </h1>
+            <p class="hero-subtitle" data-animate>
+              We are students and creators prototyping new ways of connecting people, devices, and dreams. The Cloud
+              Network is our space to explore, launch, and celebrate ambitious ideas together.
+            </p>
+            <div class="hero-actions" data-animate>
+              <a class="button" href="storyline.html">Explore the narrative</a>
+              <a class="button secondary" href="apply.html">Join the network</a>
+            </div>
+          </div>
+          <div class="hero-visual" aria-hidden="true">
+            <div class="layer-stack">
+              <article class="layer-card" data-animate>
+                <h2 class="layer-title">01 — Signal</h2>
+                <p class="layer-text">Prototype experiments that fold physical and digital worlds into seamless experiences.</p>
+              </article>
+              <article class="layer-card" data-animate>
+                <h2 class="layer-title">02 — Orbit</h2>
+                <p class="layer-text">Build alongside a crew of designers, engineers, artists, and strategists across the campus.</p>
+              </article>
+              <article class="layer-card" data-animate>
+                <h2 class="layer-title">03 — Resonance</h2>
+                <p class="layer-text">Launch stories that inspire the community and attract new collaborators to the movement.</p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="section-storyline">
+        <div class="section-divider top" aria-hidden="true"></div>
+        <div class="wrapper">
+          <div class="section-heading">
+            <div>
+              <h2 id="section-storyline" class="section-title" data-animate>
+                The narrative framework guiding The Cloud Network
+              </h2>
+              <p class="section-subtitle" data-animate>
+                Our storyline keeps us focused on purposeful impact. Each chapter pushes us to design with clarity,
+                curiosity, and intention.
+              </p>
+            </div>
+            <a class="button secondary" href="storyline.html" data-animate>Read the full story</a>
+          </div>
+
+          <div class="storyline-grid">
+            <article class="story-card" data-step="Chapter 01" data-animate>
+              <h3>Spark the signal</h3>
+              <p>Gather the club’s founding team, define the manifesto, and identify the experiments we’re obsessed with.</p>
+            </article>
+            <article class="story-card" data-step="Chapter 02" data-animate>
+              <h3>Activate the playground</h3>
+              <p>Prototype fast, share often, and build rituals that accelerate learning across disciplines.</p>
+            </article>
+            <article class="story-card" data-step="Chapter 03" data-animate>
+              <h3>Launch the broadcast</h3>
+              <p>Open up the network to campus, publish our projects, and invite partners into the narrative.</p>
+            </article>
+          </div>
+        </div>
+        <div class="section-divider bottom" aria-hidden="true"></div>
+      </section>
+
+      <section class="section" aria-labelledby="section-experience">
+        <div class="wrapper split-layout">
+          <article class="offset-panel" data-animate>
+            <h2 id="section-experience" class="section-title">What the experience feels like</h2>
+            <p class="text-muted">
+              The Cloud Network is part studio, part lab, and part stage. We host intentional sprints, curated sessions,
+              and late-night build rituals that push concepts into tangible prototypes.
+            </p>
+            <div class="metrics-grid" style="margin-top: 2.25rem">
+              <div class="metric-card" data-animate>
+                <strong>8</strong>
+                <span>Core builders</span>
+              </div>
+              <div class="metric-card" data-animate>
+                <strong>4</strong>
+                <span>Active projects</span>
+              </div>
+              <div class="metric-card" data-animate>
+                <strong>12</strong>
+                <span>Partner nodes</span>
+              </div>
+            </div>
+          </article>
+          <aside class="callout" data-animate>
+            <h3>Ready to plug into the network?</h3>
+            <p>
+              Applications open this semester. We review interest forms weekly and invite a select crew for interviews and
+              build sessions.
+            </p>
+            <div style="margin-top: 1.75rem">
+              <a class="button" href="apply.html">Start your application</a>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrapper footer-inner">
+        <span>&copy; <span id="year">2024</span> The Cloud Network. Crafted in the dorm lab.</span>
+        <nav class="footer-nav" aria-label="Footer navigation">
+          <a href="about.html">About</a>
+          <a href="storyline.html">Storyline</a>
+          <a href="apply.html">Apply</a>
+        </nav>
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+    <script src="assets/js/main.js" defer></script>
+  </body>
+</html>
