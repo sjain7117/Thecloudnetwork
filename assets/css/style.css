@@ -12,6 +12,14 @@
   --max-width: 1100px;
   --layer-offset: translate3d(0, 0, 0);
   --transition-base: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --flip-duration-in: 0.6s;
+  --flip-duration-out: 0.32s;
+  --motion-ease-out: cubic-bezier(0.16, 0.84, 0.35, 1);
+  --motion-ease-in: cubic-bezier(0.7, 0, 0.84, 0.18);
+  --card-highlight: rgba(148, 210, 255, 0.7);
+  --card-highlight-soft: rgba(56, 189, 248, 0.22);
+  --card-ambient: rgba(56, 189, 248, 0.18);
+  --card-parallax-max: 2px;
 }
 
 *,
@@ -52,6 +60,18 @@ img {
 
 main {
   display: block;
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* Layout */
@@ -553,15 +573,24 @@ footer.site-footer {
 .metric-card {
   position: relative;
   perspective: 1200px;
-  border-radius: 0.65rem;
+  border-radius: 0.75rem;
   height: 100%;
   min-height: 200px;
   outline: none;
   cursor: pointer;
+  --flip-speed: var(--flip-duration-out);
+  --flip-ease: var(--motion-ease-in);
+  --edge-angle: 90deg;
+  --edge-visibility: 0;
+  --parallax-x: 0px;
+  --parallax-y: 0px;
+  --back-offset: 2;
+  transition: box-shadow 0.4s ease, transform 0.4s ease;
 }
 
 .metric-card:focus-visible {
   box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.45);
+  border-radius: 0.75rem;
 }
 
 .metric-card .card-inner {
@@ -569,13 +598,7 @@ footer.site-footer {
   width: 100%;
   height: 100%;
   transform-style: preserve-3d;
-  transition: transform 0.7s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.metric-card:hover .card-inner,
-.metric-card:focus-visible .card-inner,
-.metric-card:active .card-inner {
-  transform: rotateY(180deg);
+  transition: transform var(--flip-speed) var(--flip-ease);
 }
 
 .metric-card .card-face {
@@ -592,15 +615,47 @@ footer.site-footer {
   justify-items: start;
   gap: 0.75rem;
   text-align: left;
+  transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.25, 1), box-shadow 0.35s ease;
+  transform: rotateY(var(--face-rotation))
+    translate3d(
+      calc(var(--parallax-x) * var(--parallax-multiplier)),
+      calc(var(--parallax-y) * var(--parallax-multiplier)),
+      0
+    );
+}
+
+.metric-card .card-face::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  background: radial-gradient(circle at 30% 30%, rgba(148, 210, 255, 0.12), transparent 60%),
+    radial-gradient(circle at 70% 75%, rgba(56, 189, 248, 0.08), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
 }
 
 .metric-card .card-front {
-  transform: rotateY(0deg);
+  --face-rotation: 0deg;
+  --parallax-multiplier: -1;
 }
 
 .metric-card .card-back {
-  transform: rotateY(180deg);
+  --face-rotation: 180deg;
+  --parallax-multiplier: 1;
   text-align: left;
+}
+
+.metric-card .card-back::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image: linear-gradient(90deg, rgba(148, 163, 184, 0.07) 0.5px, transparent 0.5px);
+  background-size: 3px 100%;
+  opacity: 0.18;
+  pointer-events: none;
 }
 
 .metric-card strong {
@@ -621,32 +676,255 @@ footer.site-footer {
 
 .metric-card .card-back-text {
   margin: 0;
-  font-size: 0.95rem;
-  line-height: 1.5;
+  font-size: 0.9rem;
+  line-height: 1.45;
   color: var(--text-muted);
+  transition: transform 0.45s var(--motion-ease-out), opacity 0.45s ease;
+  transform: translate3d(0, calc(var(--back-offset) * 1px), 0);
 }
 
-.metric-card .card-back-tag {
-  margin: 0;
-  font-size: 0.75rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--accent);
+.metric-card .card-back-subtext {
+  font-size: 0.8rem;
+  color: rgba(226, 232, 240, 0.78);
 }
 
-.orientation-tag {
+.orientation-headline {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 0.5rem;
+}
+
+.orientation-clapboard {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  justify-content: center;
+  font-size: 1rem;
+  line-height: 1;
+  transform-origin: center;
+  opacity: 0;
 }
 
-.orientation-tag::before {
-  content: "🎬";
-  font-size: 0.85rem;
+.metric-card.is-active {
+  --edge-visibility: 1;
 }
 
-.metric-card:focus-visible .card-face {
-  border-color: rgba(56, 189, 248, 0.6);
+.metric-card.is-active .card-face::after {
+  opacity: 0.55;
+}
+
+.metric-card.is-flipped .card-back-text {
+  --back-offset: 0;
+  opacity: 1;
+}
+
+.metric-card.is-flipped .orientation-clapboard {
+  opacity: 1;
+  animation: clapboard-tick calc(var(--flip-duration-in) * 0.85) ease-out 1;
+}
+
+.metric-card.is-flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.metric-card:not(.is-flipped) .card-inner {
+  transform: rotateY(0deg);
+}
+
+.metric-card .card-outline {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.metric-card .card-outline::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  transition: border-color 0.4s ease, opacity 0.4s ease;
+  opacity: 0.9;
+}
+
+.metric-card.is-active .card-outline::before {
+  border-color: rgba(148, 210, 255, 0.4);
+  opacity: 1;
+}
+
+.metric-card .card-outline-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(from var(--edge-angle, 0deg), var(--card-highlight) 0deg, var(--card-highlight-soft) 45deg, transparent 140deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: calc(var(--edge-visibility));
+  transition: opacity 0.35s ease;
+}
+
+.metric-card .card-outline-spark {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: calc(var(--edge-visibility));
+  transform: rotate(var(--edge-angle, 0deg));
+  transition: opacity 0.35s ease;
+}
+
+.metric-card .card-outline-spark::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: rgba(191, 219, 254, 0.95);
+  box-shadow: 0 0 8px rgba(148, 210, 255, 0.6);
+  filter: blur(0.15px);
+}
+
+.metric-card.is-active {
+  box-shadow: 0 22px 48px rgba(15, 23, 42, 0.55), 0 0 0 1px rgba(148, 210, 255, 0.12);
+}
+
+.metric-card.is-active .card-face {
+  box-shadow: 0 18px 36px rgba(8, 47, 73, 0.45);
+}
+
+.metric-card:focus-visible .card-outline::before {
+  border-color: rgba(148, 210, 255, 0.65);
+}
+
+.metric-card:focus-visible .card-outline-glow,
+.metric-card:focus-visible .card-outline-spark {
+  opacity: 1;
+}
+
+.metric-card.is-flipped {
+  --flip-speed: var(--flip-duration-in);
+  --flip-ease: var(--motion-ease-out);
+}
+
+.metric-card:not(.is-flipped) {
+  --flip-speed: var(--flip-duration-out);
+  --flip-ease: var(--motion-ease-in);
+}
+
+@keyframes clapboard-tick {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) rotate(-12deg) translateY(-4px);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg) translateY(0);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(0.96) rotate(6deg) translateY(1px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.9) rotate(12deg) translateY(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metric-card {
+    --flip-speed: 0s !important;
+    --parallax-x: 0px !important;
+    --parallax-y: 0px !important;
+  }
+
+  .metric-card .card-inner {
+    transform: none !important;
+  }
+
+  .metric-card .card-face {
+    position: relative;
+    transform: none !important;
+    backface-visibility: visible;
+  }
+
+  .metric-card .card-back {
+    display: none;
+  }
+
+  .metric-card.is-flipped .card-front {
+    display: none;
+  }
+
+  .metric-card.is-flipped .card-back {
+    display: grid;
+  }
+
+  .metric-card .card-outline,
+  .metric-card .card-outline::before,
+  .metric-card .card-outline-glow,
+  .metric-card .card-outline-spark {
+    opacity: 0 !important;
+  }
+
+  .metric-card .card-back-text {
+    transform: none !important;
+  }
+
+  .orientation-clapboard {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+}
+
+.reduced-motion .metric-card {
+  --flip-speed: 0s !important;
+  --parallax-x: 0px !important;
+  --parallax-y: 0px !important;
+}
+
+.reduced-motion .metric-card .card-inner {
+  transform: none !important;
+}
+
+.reduced-motion .metric-card .card-face {
+  position: relative;
+  transform: none !important;
+  backface-visibility: visible;
+}
+
+.reduced-motion .metric-card .card-back {
+  display: none;
+}
+
+.reduced-motion .metric-card.is-flipped .card-front {
+  display: none;
+}
+
+.reduced-motion .metric-card.is-flipped .card-back {
+  display: grid;
+}
+
+.reduced-motion .metric-card .card-outline,
+.reduced-motion .metric-card .card-outline::before,
+.reduced-motion .metric-card .card-outline-glow,
+.reduced-motion .metric-card .card-outline-spark {
+  opacity: 0 !important;
+}
+
+.reduced-motion .metric-card .card-back-text {
+  transform: none !important;
+}
+
+.reduced-motion .orientation-clapboard {
+  animation: none !important;
+  opacity: 1 !important;
 }
 .officer-details {
   margin-top: 3rem;
