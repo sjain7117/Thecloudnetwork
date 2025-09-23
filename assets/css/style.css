@@ -1115,6 +1115,10 @@ footer.site-footer {
 
 .team-card-leader .team-image {
   position: relative;
+  transform: translateZ(0);
+  transform-origin: center bottom;
+  transition: transform 0.4s ease-out;
+  will-change: transform;
 }
 
 .team-card-info {
@@ -1128,8 +1132,8 @@ footer.site-footer {
   z-index: 2;
   background: transparent;
   isolation: isolate;
-  transform: translateY(0);
-  transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transform: none;
+  transition: transform 0.4s ease-out;
 }
 
 .team-card-leader .team-card-info::before {
@@ -1149,7 +1153,7 @@ footer.site-footer {
     rgba(2, 6, 23, 0) 100%
   );
   opacity: 0.98;
-  transition: opacity 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: opacity 0.4s ease-out;
 }
 
 .team-card-leader .team-role,
@@ -1179,19 +1183,13 @@ footer.site-footer {
   --leader-lift: -10px;
   --leader-scale: 1.015;
   --leader-shadow: 0 34px 70px -34px rgba(56, 189, 248, 0.82);
-  transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1),
-    box-shadow 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: transform 0.4s ease-out, box-shadow 0.4s ease-out;
 }
 
-.team-card-leader .team-image,
 .team-card-leader .team-card-info,
-.team-card-leader .team-image img {
-  transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
 .team-card-leader .team-role,
 .team-card-leader .team-name {
-  transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: transform 0.4s ease-out;
 }
 
 .team-card-leader:is(:hover, :focus-visible) {
@@ -1203,16 +1201,12 @@ footer.site-footer {
   opacity: 1;
 }
 
-.team-card-leader:is(:hover, :focus-visible) .team-card-info {
-  transform: translateY(-4px);
-}
-
 .team-card-leader:is(:hover, :focus-visible) .team-card-info::before {
   opacity: 1;
 }
 
-.team-card-leader:is(:hover, :focus-visible) .team-image img {
-  transform: translateY(-6px) scale(1.05);
+.team-card-leader:is(:hover, :focus-visible) .team-image {
+  transform: translateY(-6px) scale(1.03);
 }
 
 .team-card-leader:is(:hover, :focus-visible) .team-role,
