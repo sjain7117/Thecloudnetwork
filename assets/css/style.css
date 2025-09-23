@@ -575,18 +575,6 @@ footer.site-footer {
   color: var(--text-muted);
 }
 
-@property --cadence-progress {
-  syntax: "<number>";
-  inherits: false;
-  initial-value: 0;
-}
-
-@property --cadence-angle {
-  syntax: "<angle>";
-  inherits: false;
-  initial-value: 0deg;
-}
-
 .cadence-card {
   --card-radius: 0.95rem;
   --flip-duration: 0.32s;
@@ -640,24 +628,13 @@ footer.site-footer {
 }
 
 .cadence-tracer {
-  --cadence-progress: 0;
-  --cadence-angle: 315deg;
-  --cadence-track-inset: clamp(12px, 6%, 18px);
-  --cadence-track-span: calc(100% - var(--cadence-track-inset) * 2);
-  --cadence-segment-1: clamp(0, calc(var(--cadence-progress) * 4), 1);
-  --cadence-segment-2: clamp(0, calc(var(--cadence-progress) * 4 - 1), 1);
-  --cadence-segment-3: clamp(0, calc(var(--cadence-progress) * 4 - 2), 1);
-  --cadence-segment-4: clamp(0, calc(var(--cadence-progress) * 4 - 3), 1);
-  --cadence-x: calc(var(--cadence-track-inset) + var(--cadence-track-span) * (var(--cadence-segment-1) - var(--cadence-segment-3)));
-  --cadence-y: calc(var(--cadence-track-inset) + var(--cadence-track-span) * (var(--cadence-segment-2) - var(--cadence-segment-4)));
   position: absolute;
   inset: 0;
+  border-radius: calc(var(--card-radius) + 1.5px);
   pointer-events: none;
-  border-radius: calc(var(--card-radius) + 2px);
-  mix-blend-mode: screen;
   opacity: 0;
-  transition: opacity 0.28s ease, filter 0.28s ease;
-  filter: drop-shadow(0 0 0 rgba(93, 220, 255, 0));
+  transition: opacity 0.35s ease;
+  mix-blend-mode: screen;
   z-index: 3;
 }
 
@@ -665,41 +642,39 @@ footer.site-footer {
 .cadence-tracer::after {
   content: "";
   position: absolute;
-  top: var(--cadence-y);
-  left: var(--cadence-x);
+  width: 14px;
+  height: 14px;
+  offset-path: path(
+    "M 6% 6% H 94% A 6% 6% 0 0 1 100% 12% V 88% A 6% 6% 0 0 1 94% 94% H 6% A 6% 6% 0 0 1 0% 88% V 12% A 6% 6% 0 0 1 6% 6% Z"
+  );
+  offset-distance: 0%;
+  offset-rotate: auto;
+  animation: cadenceTracerOrbit var(--cadence-tracer-duration) linear infinite;
+  transform: translate(-50%, -50%);
   opacity: 0;
 }
 
 .cadence-tracer::before {
-  width: clamp(42px, 16vw, 64px);
-  height: clamp(1.5px, 0.35vw, 2px);
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(93, 220, 255, 0) 0%, rgba(93, 220, 255, 0.16) 32%, rgba(162, 237, 255, 0.45) 58%, rgba(110, 197, 255, 0.82) 100%);
-  transform-origin: 100% 50%;
-  transform: translate(-100%, -50%) rotate(var(--cadence-angle));
-  filter: drop-shadow(0 0 8px rgba(112, 227, 255, 0.35)) drop-shadow(0 0 20px rgba(78, 0, 194, 0.25));
-  transition: opacity 0.18s ease;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(224, 247, 255, 0.95) 0%, rgba(148, 233, 255, 0.8) 55%, rgba(56, 189, 248, 0.2) 75%, transparent 100%);
+  box-shadow: 0 0 18px rgba(148, 233, 255, 0.75), 0 0 38px rgba(56, 189, 248, 0.4);
+  transition: opacity 0.16s ease;
 }
 
 .cadence-tracer::after {
-  width: clamp(8px, 1.1vw, 12px);
-  height: clamp(8px, 1.1vw, 12px);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.98) 0%, rgba(179, 241, 255, 0.92) 42%, rgba(93, 220, 255, 0.7) 68%, rgba(93, 220, 255, 0.08) 100%);
-  box-shadow: 0 0 12px rgba(134, 232, 255, 0.75), 0 0 32px rgba(78, 0, 194, 0.45);
-  transition: opacity 0.18s ease;
+  width: 46px;
+  height: 14px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0) 0%, rgba(148, 233, 255, 0.35) 40%, rgba(224, 247, 255, 0.9) 100%);
+  filter: blur(7px);
+  transform: translate(-92%, -50%);
+  transition: opacity 0.25s ease;
 }
 
-.cadence-tracer.is-tracing {
-  opacity: 1;
-  filter: drop-shadow(0 0 18px rgba(104, 226, 255, 0.32));
-  animation: cadenceTracerTrack var(--cadence-tracer-duration) linear infinite;
-}
-
-.cadence-tracer.is-tracing::before,
-.cadence-tracer.is-tracing::after {
-  opacity: 1;
+@supports not (offset-path: path("M 0 0")) {
+  .cadence-tracer {
+    display: none;
+  }
 }
 
 .cadence-card .card-inner {
@@ -866,6 +841,15 @@ footer.site-footer {
   opacity: 1;
 }
 
+.cadence-card.is-engaged .cadence-tracer {
+  opacity: 1;
+}
+
+.cadence-card.is-engaged .cadence-tracer::before,
+.cadence-card.is-engaged .cadence-tracer::after {
+  opacity: 1;
+}
+
 .cadence-card.is-flipped .card-inner {
   transform: rotateY(180deg);
 }
@@ -881,38 +865,12 @@ footer.site-footer {
   border-color: rgba(56, 189, 248, 0.6);
 }
 
-@keyframes cadenceTracerTrack {
+@keyframes cadenceTracerOrbit {
   0% {
-    --cadence-progress: 0;
-    --cadence-angle: 315deg;
-  }
-  12.5% {
-    --cadence-angle: 0deg;
-  }
-  25% {
-    --cadence-progress: 0.25;
-    --cadence-angle: 45deg;
-  }
-  37.5% {
-    --cadence-angle: 90deg;
-  }
-  50% {
-    --cadence-progress: 0.5;
-    --cadence-angle: 135deg;
-  }
-  62.5% {
-    --cadence-angle: 180deg;
-  }
-  75% {
-    --cadence-progress: 0.75;
-    --cadence-angle: 225deg;
-  }
-  87.5% {
-    --cadence-angle: 270deg;
+    offset-distance: 0%;
   }
   100% {
-    --cadence-progress: 1;
-    --cadence-angle: 315deg;
+    offset-distance: 100%;
   }
 }
 
