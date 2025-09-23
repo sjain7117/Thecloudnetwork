@@ -63,9 +63,198 @@
     });
   };
 
+  const initCadenceCards = () => {
+    const cards = Array.from(document.querySelectorAll("[data-card]"));
+    if (!cards.length) return;
+
+    const FLIP_IN_DURATION = 0.6;
+    const FLIP_OUT_DURATION = 0.28;
+    const FLIP_IN_EASING = "cubic-bezier(0.16, 1, 0.3, 1)";
+    const FLIP_OUT_EASING = "cubic-bezier(0.55, 0, 0.55, 0.2)";
+
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let reduceMotion = motionQuery.matches;
+
+    const updateAria = (card, flipped) => {
+      card.setAttribute("aria-pressed", flipped ? "true" : "false");
+      const label = flipped ? card.dataset.backLabel : card.dataset.frontLabel;
+      if (label) {
+        card.setAttribute("aria-label", label);
+      }
+    };
+
+    const setFlipState = (card, flipped, options = {}) => {
+      const inner = card.querySelector(".card-inner");
+      if (!inner) return;
+
+      const { animate = true, force = false } = options;
+      const isCurrentlyFlipped = card.classList.contains("is-flipped");
+      if (isCurrentlyFlipped === flipped && !force) {
+        updateAria(card, flipped);
+        return;
+      }
+
+      if (reduceMotion || !animate) {
+        inner.style.setProperty("--flip-duration", "0.001s");
+        inner.style.setProperty("--flip-easing", "linear");
+      } else {
+        inner.style.setProperty("--flip-duration", `${flipped ? FLIP_IN_DURATION : FLIP_OUT_DURATION}s`);
+        inner.style.setProperty("--flip-easing", flipped ? FLIP_IN_EASING : FLIP_OUT_EASING);
+      }
+
+      card.classList.toggle("is-flipped", flipped);
+      card.classList.toggle("is-engaged", flipped || card === document.activeElement);
+      updateAria(card, flipped);
+
+      if (!flipped) {
+        card.style.setProperty("--layer-shift-x", "0px");
+        card.style.setProperty("--layer-shift-y", "0px");
+      }
+
+      if (!flipped && !card.matches(":focus")) {
+        card.classList.remove("is-engaged");
+      }
+
+      if (flipped && !reduceMotion && card.dataset.easterEgg === "clapboard") {
+        const clapboard = card.querySelector("[data-clapboard]");
+        if (clapboard) {
+          clapboard.classList.remove("is-playing");
+          void clapboard.offsetWidth;
+          clapboard.classList.add("is-playing");
+          window.setTimeout(() => clapboard.classList.remove("is-playing"), 650);
+        }
+      }
+    };
+
+    const closeCards = (exception) => {
+      cards.forEach((card) => {
+        if (card !== exception) {
+          setFlipState(card, false, { animate: !reduceMotion });
+        }
+      });
+    };
+
+    const updatePointerState = (card, event) => {
+      const rect = card.getBoundingClientRect();
+      const pointerX = typeof event.clientX === "number" ? event.clientX : rect.left + rect.width / 2;
+      const pointerY = typeof event.clientY === "number" ? event.clientY : rect.top + rect.height / 2;
+
+      const relativeX = pointerX - rect.left;
+      const relativeY = pointerY - rect.top;
+      const normalizedX = relativeX / rect.width - 0.5;
+      const normalizedY = relativeY / rect.height - 0.5;
+
+      const shiftX = Math.max(Math.min(normalizedX * 4, 2), -2);
+      const shiftY = Math.max(Math.min(normalizedY * 4, 2), -2);
+
+      card.style.setProperty("--layer-shift-x", `${shiftX.toFixed(2)}px`);
+      card.style.setProperty("--layer-shift-y", `${shiftY.toFixed(2)}px`);
+
+      if (Math.abs(normalizedX) < 0.01 && Math.abs(normalizedY) < 0.01) {
+        card.style.setProperty("--edge-angle", "0deg");
+      } else {
+        const angle = Math.atan2(normalizedY, normalizedX);
+        let angleDeg = angle * (180 / Math.PI) + 90;
+        if (angleDeg < 0) angleDeg += 360;
+        card.style.setProperty("--edge-angle", `${angleDeg}deg`);
+      }
+    };
+
+    const handleMotionChange = () => {
+      reduceMotion = motionQuery.matches;
+      if (reduceMotion) {
+        cards.forEach((card) => {
+          setFlipState(card, false, { animate: false, force: true });
+          card.classList.remove("is-engaged");
+          card.style.setProperty("--layer-shift-x", "0px");
+          card.style.setProperty("--layer-shift-y", "0px");
+        });
+      }
+    };
+
+    if (typeof motionQuery.addEventListener === "function") {
+      motionQuery.addEventListener("change", handleMotionChange);
+    } else if (typeof motionQuery.addListener === "function") {
+      motionQuery.addListener(handleMotionChange);
+    }
+
+    cards.forEach((card, index) => {
+      card.style.setProperty("--card-reveal-delay", `${index * 60}ms`);
+      updateAria(card, false);
+
+      card.addEventListener("pointerenter", (event) => {
+        if (reduceMotion) return;
+        if (event.pointerType && event.pointerType !== "mouse") return;
+        closeCards(card);
+        setFlipState(card, true);
+        updatePointerState(card, event);
+      });
+
+      card.addEventListener("pointermove", (event) => {
+        if (reduceMotion) return;
+        if (event.pointerType && event.pointerType !== "mouse") return;
+        updatePointerState(card, event);
+      });
+
+      card.addEventListener("pointerleave", (event) => {
+        if (reduceMotion) return;
+        if (event.pointerType && event.pointerType !== "mouse") return;
+        setFlipState(card, false);
+      });
+
+      card.addEventListener("pointerdown", (event) => {
+        if (event.pointerType === "touch" || event.pointerType === "pen") {
+          const willFlip = !card.classList.contains("is-flipped");
+          closeCards(card);
+          if (willFlip && !reduceMotion) {
+            updatePointerState(card, event);
+          }
+          setFlipState(card, willFlip, { animate: !reduceMotion });
+          if (typeof card.focus === "function") {
+            card.focus({ preventScroll: true });
+          }
+          event.preventDefault();
+        }
+      });
+
+      card.addEventListener("focus", () => {
+        card.classList.add("is-engaged");
+      });
+
+      card.addEventListener("blur", () => {
+        if (!card.classList.contains("is-flipped")) {
+          card.classList.remove("is-engaged");
+        }
+      });
+
+      card.addEventListener("keydown", (event) => {
+        if (event.key === " " || event.key === "Spacebar" || event.key === "Enter") {
+          event.preventDefault();
+          const willFlip = !card.classList.contains("is-flipped");
+          if (willFlip) {
+            closeCards(card);
+          }
+          setFlipState(card, willFlip, { animate: !reduceMotion });
+        } else if (event.key === "Escape") {
+          if (card.classList.contains("is-flipped")) {
+            event.preventDefault();
+            setFlipState(card, false, { animate: !reduceMotion });
+          }
+        }
+      });
+    });
+
+    document.addEventListener("pointerdown", (event) => {
+      if (!event.target.closest("[data-card]")) {
+        closeCards();
+      }
+    });
+  };
+
   document.addEventListener("DOMContentLoaded", () => {
     setActiveNav();
     initScrollAnimations();
     initFormInteractions();
+    initCadenceCards();
   });
 })();
