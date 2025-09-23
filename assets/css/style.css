@@ -581,7 +581,7 @@ footer.site-footer {
   --flip-easing: cubic-bezier(0.55, 0, 0.55, 0.2);
   --layer-shift-x: 0px;
   --layer-shift-y: 0px;
-  --edge-angle: 0deg;
+  --cadence-tracer-duration: 2.75s;
   isolation: isolate;
   display: block;
   padding: 0;
@@ -595,6 +595,8 @@ footer.site-footer {
   touch-action: manipulation;
   opacity: 0;
   transform: translateY(28px);
+  position: relative;
+  overflow: hidden;
   transition:
     opacity 0.65s cubic-bezier(0.33, 1, 0.68, 1) var(--card-reveal-delay, 0ms),
     transform 0.65s cubic-bezier(0.33, 1, 0.68, 1) var(--card-reveal-delay, 0ms),
@@ -612,28 +614,6 @@ footer.site-footer {
   box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.45), 0 28px 58px rgba(10, 20, 40, 0.55);
 }
 
-.cadence-card::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border-radius: calc(var(--card-radius) + 1px);
-  padding: 1px;
-  background:
-    radial-gradient(circle at 50% 0%, rgba(195, 239, 255, 0.65) 0%, rgba(195, 239, 255, 0.12) 55%, transparent 75%) 50% 0%/9px 9px
-      no-repeat,
-    conic-gradient(from 0deg, transparent 0deg, rgba(56, 189, 248, 0.55) 22deg, rgba(56, 189, 248, 0.08) 74deg, transparent 120deg);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  opacity: 0;
-  transform-origin: center;
-  transform: rotate(var(--edge-angle, 0deg));
-  transition: opacity 0.35s ease;
-  pointer-events: none;
-  z-index: 3;
-}
-
 .cadence-card::after {
   content: "";
   position: absolute;
@@ -645,6 +625,56 @@ footer.site-footer {
   filter: blur(8px);
   pointer-events: none;
   z-index: 1;
+}
+
+.cadence-tracer {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--card-radius) + 1.5px);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  mix-blend-mode: screen;
+  z-index: 3;
+}
+
+.cadence-tracer::before,
+.cadence-tracer::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  offset-path: path(
+    "M 6% 6% H 94% A 6% 6% 0 0 1 100% 12% V 88% A 6% 6% 0 0 1 94% 94% H 6% A 6% 6% 0 0 1 0% 88% V 12% A 6% 6% 0 0 1 6% 6% Z"
+  );
+  offset-distance: 0%;
+  offset-rotate: auto;
+  animation: cadenceTracerOrbit var(--cadence-tracer-duration) linear infinite;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+}
+
+.cadence-tracer::before {
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(224, 247, 255, 0.95) 0%, rgba(148, 233, 255, 0.8) 55%, rgba(56, 189, 248, 0.2) 75%, transparent 100%);
+  box-shadow: 0 0 18px rgba(148, 233, 255, 0.75), 0 0 38px rgba(56, 189, 248, 0.4);
+  transition: opacity 0.16s ease;
+}
+
+.cadence-tracer::after {
+  width: 46px;
+  height: 14px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0) 0%, rgba(148, 233, 255, 0.35) 40%, rgba(224, 247, 255, 0.9) 100%);
+  filter: blur(7px);
+  transform: translate(-92%, -50%);
+  transition: opacity 0.25s ease;
+}
+
+@supports not (offset-path: path("M 0 0")) {
+  .cadence-tracer {
+    display: none;
+  }
 }
 
 .cadence-card .card-inner {
@@ -806,13 +836,17 @@ footer.site-footer {
   filter: brightness(1.02);
 }
 
-.cadence-card.is-engaged::before {
-  opacity: 1;
-  animation: edgeOrbit 2.6s linear infinite;
-}
-
 .cadence-card.is-engaged::after,
 .cadence-card.is-engaged .card-inner::after {
+  opacity: 1;
+}
+
+.cadence-card.is-engaged .cadence-tracer {
+  opacity: 1;
+}
+
+.cadence-card.is-engaged .cadence-tracer::before,
+.cadence-card.is-engaged .cadence-tracer::after {
   opacity: 1;
 }
 
@@ -831,12 +865,12 @@ footer.site-footer {
   border-color: rgba(56, 189, 248, 0.6);
 }
 
-@keyframes edgeOrbit {
+@keyframes cadenceTracerOrbit {
   0% {
-    transform: rotate(var(--edge-angle, 0deg));
+    offset-distance: 0%;
   }
   100% {
-    transform: rotate(calc(var(--edge-angle, 0deg) + 360deg));
+    offset-distance: 100%;
   }
 }
 
@@ -867,17 +901,22 @@ footer.site-footer {
     filter: none;
   }
 
-  .cadence-card::before,
   .cadence-card::after,
   .cadence-card .card-inner::after {
     animation: none;
     opacity: 0;
   }
 
-  .cadence-card.is-engaged::before,
   .cadence-card.is-engaged::after,
   .cadence-card.is-engaged .card-inner::after {
     opacity: 0;
+  }
+
+  .cadence-tracer,
+  .cadence-tracer::before,
+  .cadence-tracer::after {
+    animation: none !important;
+    opacity: 0 !important;
   }
 
   .cadence-card .card-inner {

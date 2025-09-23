@@ -149,15 +149,6 @@
 
       card.style.setProperty("--layer-shift-x", `${shiftX.toFixed(2)}px`);
       card.style.setProperty("--layer-shift-y", `${shiftY.toFixed(2)}px`);
-
-      if (Math.abs(normalizedX) < 0.01 && Math.abs(normalizedY) < 0.01) {
-        card.style.setProperty("--edge-angle", "0deg");
-      } else {
-        const angle = Math.atan2(normalizedY, normalizedX);
-        let angleDeg = angle * (180 / Math.PI) + 90;
-        if (angleDeg < 0) angleDeg += 360;
-        card.style.setProperty("--edge-angle", `${angleDeg}deg`);
-      }
     };
 
     const handleMotionChange = () => {
