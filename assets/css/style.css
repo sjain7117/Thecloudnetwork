@@ -146,6 +146,62 @@ nav.primary-nav a.active::after {
   display: inline-block;
 }
 
+.hero-rotator {
+  --rotator-duration: 0.72s;
+  --rotator-ease: cubic-bezier(0.65, 0, 0.35, 1);
+  display: inline-block;
+  position: relative;
+  perspective: 1100px;
+}
+
+.hero-rotator__stage {
+  position: relative;
+  display: inline-grid;
+  align-items: baseline;
+  justify-items: start;
+  min-width: var(--rotator-width, auto);
+  min-height: var(--rotator-height, auto);
+  transform-style: preserve-3d;
+  transform: rotateY(0deg);
+  transition: transform var(--rotator-duration) var(--rotator-ease);
+}
+
+.hero-rotator__face {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  line-height: inherit;
+  backface-visibility: hidden;
+  transition: opacity var(--rotator-duration) var(--rotator-ease);
+  opacity: 1;
+  will-change: transform, opacity;
+}
+
+.hero-rotator__face--front {
+  transform: rotateY(0deg);
+}
+
+.hero-rotator__face--back {
+  transform: rotateY(180deg);
+  opacity: 0;
+}
+
+.hero-rotator.is-animating .hero-rotator__face--front {
+  opacity: 0;
+}
+
+.hero-rotator.is-animating .hero-rotator__face--back {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-rotator__stage,
+  .hero-rotator__face {
+    transition: none !important;
+  }
+}
+
 .hero-subtitle {
   margin-top: 1.25rem;
   font-size: 1.1rem;
@@ -1217,7 +1273,6 @@ footer.site-footer {
   background-size: cover;
   background-position: center bottom;
   background-repeat: no-repeat;
-  filter: blur(clamp(28px, 4vw, 46px));
   transform-origin: center top;
   transform: translateY(6%) scale(1.12);
   opacity: 0.92;
@@ -1256,8 +1311,6 @@ footer.site-footer {
     rgba(2, 6, 23, 0.28) 76%,
     rgba(2, 6, 23, 0) 100%
   );
-  backdrop-filter: blur(clamp(18px, 4vw, 32px));
-  -webkit-backdrop-filter: blur(clamp(18px, 4vw, 32px));
   mask-image: linear-gradient(
     to top,
     rgba(0, 0, 0, 1) 0%,
@@ -1384,9 +1437,6 @@ footer.site-footer {
   inset: 0;
   pointer-events: none;
   z-index: 1;
-  /* Backdrop blur is shaped with a vertical mask so the strength eases from strong at the base to none by ~38%. */
-  backdrop-filter: blur(clamp(20px, 5vw, 36px));
-  -webkit-backdrop-filter: blur(clamp(20px, 5vw, 36px));
   background: linear-gradient(
     to top,
     rgba(2, 6, 23, 0.4) 0%,
