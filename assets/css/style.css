@@ -593,15 +593,17 @@ footer.site-footer {
 
 .officer-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.75rem;
   margin: 0;
   padding: 0;
+  justify-items: center;
 }
 
 .officer-list-item {
   display: grid;
   gap: 0.35rem;
+  text-align: center;
 }
 
 .officer-list-item dt {
@@ -617,6 +619,12 @@ footer.site-footer {
   font-size: 1.35rem;
   font-weight: 600;
   color: var(--text-primary);
+}
+
+@media (min-width: 720px) {
+  .officer-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 .resources-grid {
@@ -681,7 +689,13 @@ footer.site-footer {
 }
 
 .team-grid-leadership {
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+@media (min-width: 960px) {
+  .team-grid-leadership {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 .team-grid-members {
@@ -698,6 +712,7 @@ footer.site-footer {
   flex-direction: column;
   position: relative;
   transition: var(--transition-base);
+  outline: none;
 }
 
 .team-card::after {
@@ -708,14 +723,55 @@ footer.site-footer {
   background: linear-gradient(150deg, rgba(56, 189, 248, 0.12), transparent 55%);
   opacity: 0;
   transition: opacity 0.35s ease;
+  z-index: 1;
 }
 
-.team-card:hover {
+.team-card-leader {
+  display: block;
+  padding: 0;
+}
+
+.team-card-leader .team-image {
+  position: relative;
+}
+
+.team-card-info {
+  position: absolute;
+  inset: 0;
+  padding: 1.8rem 1.5rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.45rem;
+  background: linear-gradient(to top, rgba(2, 6, 23, 0.92) 0%, rgba(2, 6, 23, 0.78) 38%, rgba(2, 6, 23, 0) 75%);
+  z-index: 2;
+  transition: background 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.team-card-leader:is(:hover, :focus-visible) .team-card-info {
+  background: linear-gradient(to top, rgba(2, 6, 23, 0.95) 0%, rgba(2, 6, 23, 0.82) 42%, rgba(2, 6, 23, 0.05) 78%);
+}
+
+.team-card-leader .team-role,
+.team-card-leader .team-name {
+  text-align: left;
+}
+
+.team-card-leader .team-name {
+  font-size: 1.2rem;
+}
+
+.team-card:focus-visible {
+  outline: 2px solid rgba(56, 189, 248, 0.65);
+  outline-offset: 4px;
+}
+
+.team-card:is(:hover, :focus-visible) {
   transform: translateY(-6px);
   box-shadow: 0 30px 60px -35px rgba(56, 189, 248, 0.75);
 }
 
-.team-card:hover::after {
+.team-card:is(:hover, :focus-visible)::after {
   opacity: 1;
 }
 
