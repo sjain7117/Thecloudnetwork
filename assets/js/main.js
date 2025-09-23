@@ -87,6 +87,7 @@
     let timerId = null;
     let isAnimating = false;
     let activeTransitionHandler = null;
+    let pendingFrameId = null;
 
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     let reduceMotion = motionQuery.matches;
@@ -136,26 +137,39 @@
 
     const detachTransitionHandler = () => {
       if (activeTransitionHandler) {
-        stage.removeEventListener("transitionend", activeTransitionHandler);
+        nextFace.removeEventListener("transitionend", activeTransitionHandler);
         activeTransitionHandler = null;
       }
     };
 
+    const cancelPendingFrame = () => {
+      if (pendingFrameId !== null) {
+        if (typeof window.cancelAnimationFrame === "function") {
+          window.cancelAnimationFrame(pendingFrameId);
+        }
+        pendingFrameId = null;
+      }
+    };
+
     const resetStage = () => {
-      stage.style.transition = "none";
-      stage.style.transform = "rotateY(0deg)";
+      cancelPendingFrame();
+      currentFace.style.transition = "none";
+      nextFace.style.transition = "none";
       rotator.classList.remove("is-animating");
-      requestAnimationFrame(() => {
-        stage.style.removeProperty("transition");
-      });
+      currentFace.style.removeProperty("transform");
+      nextFace.style.removeProperty("transform");
+      // Force styles to apply without animating so the next flip starts cleanly.
+      void stage.offsetWidth;
+      currentFace.style.removeProperty("transition");
+      nextFace.style.removeProperty("transition");
     };
 
     const finalizeFlip = (targetIndex) => {
       currentIndex = targetIndex;
       currentFace.textContent = phrases[currentIndex];
-      nextFace.textContent = "";
       isAnimating = false;
       resetStage();
+      nextFace.textContent = "";
       nextIndex = (currentIndex + 1) % phrases.length;
       pendingIndex = nextIndex;
     };
@@ -174,13 +188,13 @@
       }
 
       isAnimating = true;
-      rotator.classList.add("is-animating");
       nextFace.textContent = nextPhrase;
 
       detachTransitionHandler();
+      cancelPendingFrame();
 
       const handleTransitionEnd = (event) => {
-        if (event.target !== stage || event.propertyName !== "transform") {
+        if (event.target !== nextFace || event.propertyName !== "transform") {
           return;
         }
 
@@ -190,11 +204,19 @@
       };
 
       activeTransitionHandler = handleTransitionEnd;
-      stage.addEventListener("transitionend", handleTransitionEnd);
+      nextFace.addEventListener("transitionend", handleTransitionEnd);
 
-      requestAnimationFrame(() => {
-        stage.style.transform = "rotateY(180deg)";
-      });
+      if (typeof window.requestAnimationFrame === "function") {
+        pendingFrameId = window.requestAnimationFrame(() => {
+          pendingFrameId = null;
+          if (!isAnimating) {
+            return;
+          }
+          rotator.classList.add("is-animating");
+        });
+      } else {
+        rotator.classList.add("is-animating");
+      }
     };
 
     const scheduleNext = () => {
