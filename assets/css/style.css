@@ -1129,7 +1129,31 @@ footer.site-footer {
   background: transparent;
   isolation: isolate;
   transform: translateY(0);
+<<<<<<< HEAD
   transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+=======
+  transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.team-card-leader .team-card-info::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  /* Premium continuous fade that keeps officer details anchored within a high-contrast zone. */
+  background: linear-gradient(
+    to top,
+    rgba(2, 6, 23, 0.92) 0%,
+    rgba(2, 6, 23, 0.86) 18%,
+    rgba(2, 6, 23, 0.72) 36%,
+    rgba(2, 6, 23, 0.52) 54%,
+    rgba(2, 6, 23, 0.28) 72%,
+    rgba(2, 6, 23, 0.12) 86%,
+    rgba(2, 6, 23, 0) 100%
+  );
+  opacity: 0.98;
+  transition: opacity 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
+>>>>>>> parent of 172cf15 (Fix leadership hover gradient detachment)
 }
 
 .team-card-leader .team-role,
@@ -1159,13 +1183,19 @@ footer.site-footer {
   --leader-lift: -10px;
   --leader-scale: 1.015;
   --leader-shadow: 0 34px 70px -34px rgba(56, 189, 248, 0.82);
+<<<<<<< HEAD
   transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
     box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+=======
+  transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1),
+    box-shadow 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
+>>>>>>> parent of 172cf15 (Fix leadership hover gradient detachment)
 }
 
 .team-card-leader .team-image,
 .team-card-leader .team-card-info,
 .team-card-leader .team-image img {
+<<<<<<< HEAD
   transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
@@ -1288,11 +1318,18 @@ footer.site-footer {
     top: 62%;
     bottom: -30%;
   }
+=======
+  transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
+>>>>>>> parent of 172cf15 (Fix leadership hover gradient detachment)
 }
 
 .team-card-leader .team-role,
 .team-card-leader .team-name {
+<<<<<<< HEAD
   transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+=======
+  transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
+>>>>>>> parent of 172cf15 (Fix leadership hover gradient detachment)
 }
 
 .team-card-leader:is(:hover, :focus-visible) {
@@ -1305,10 +1342,21 @@ footer.site-footer {
 }
 
 .team-card-leader:is(:hover, :focus-visible) .team-card-info {
+<<<<<<< HEAD
   transform: translateY(0);
 }
 
 .team-card-leader:is(:hover, :focus-visible) .team-image {
+=======
+  transform: translateY(-4px);
+}
+
+.team-card-leader:is(:hover, :focus-visible) .team-card-info::before {
+  opacity: 1;
+}
+
+.team-card-leader:is(:hover, :focus-visible) .team-image img {
+>>>>>>> parent of 172cf15 (Fix leadership hover gradient detachment)
   transform: translateY(-6px) scale(1.05);
 }
 
