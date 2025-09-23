@@ -743,13 +743,29 @@ footer.site-footer {
   flex-direction: column;
   justify-content: flex-end;
   gap: 0.45rem;
-  background: linear-gradient(to top, rgba(2, 6, 23, 0.92) 0%, rgba(2, 6, 23, 0.78) 38%, rgba(2, 6, 23, 0) 75%);
   z-index: 2;
-  transition: background 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+  background: transparent;
+  isolation: isolate;
+  transform: translateY(0);
+  transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-.team-card-leader:is(:hover, :focus-visible) .team-card-info {
-  background: linear-gradient(to top, rgba(2, 6, 23, 0.95) 0%, rgba(2, 6, 23, 0.82) 42%, rgba(2, 6, 23, 0.05) 78%);
+.team-card-leader .team-card-info::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    180deg,
+    rgba(2, 6, 23, 0.93) 5%,
+    rgba(2, 6, 23, 0.86) 32%,
+    rgba(2, 6, 23, 0.55) 55%,
+    rgba(2, 6, 23, 0.08) 80%,
+    rgba(2, 6, 23, 0) 100%
+  );
+  clip-path: polygon(0 100%, 100% 100%, 100% 34%, 0 56%);
+  opacity: 0.98;
+  transition: opacity 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .team-card-leader .team-role,
@@ -773,6 +789,57 @@ footer.site-footer {
 
 .team-card:is(:hover, :focus-visible)::after {
   opacity: 1;
+}
+
+.team-card-leader {
+  --leader-lift: -10px;
+  --leader-scale: 1.015;
+  --leader-shadow: 0 34px 70px -34px rgba(56, 189, 248, 0.82);
+  transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1),
+    box-shadow 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.team-card-leader .team-image,
+.team-card-leader .team-card-info,
+.team-card-leader .team-image img {
+  transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.team-card-leader .team-role,
+.team-card-leader .team-name {
+  transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.team-card-leader:is(:hover, :focus-visible) {
+  transform: translateY(var(--leader-lift)) scale(var(--leader-scale));
+  box-shadow: var(--leader-shadow);
+}
+
+.team-card-leader:is(:hover, :focus-visible)::after {
+  opacity: 1;
+}
+
+.team-card-leader:is(:hover, :focus-visible) .team-card-info {
+  transform: translateY(-4px);
+}
+
+.team-card-leader:is(:hover, :focus-visible) .team-card-info::before {
+  opacity: 1;
+}
+
+.team-card-leader:is(:hover, :focus-visible) .team-image img {
+  transform: translateY(-6px) scale(1.05);
+}
+
+.team-card-leader:is(:hover, :focus-visible) .team-role,
+.team-card-leader:is(:hover, :focus-visible) .team-name {
+  transform: translateY(-2px);
+}
+
+.team-grid-leadership .team-card-leader:first-child {
+  --leader-lift: -11px;
+  --leader-scale: 1.02;
+  --leader-shadow: 0 38px 78px -34px rgba(56, 189, 248, 0.86);
 }
 
 .team-image {
