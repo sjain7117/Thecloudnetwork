@@ -310,6 +310,138 @@
     });
   };
 
+  const initPdfModal = () => {
+    const overlay = document.querySelector("[data-pdf-overlay]");
+    const frame = overlay ? overlay.querySelector("[data-pdf-frame]") : null;
+    const closeButton = overlay ? overlay.querySelector("[data-pdf-close]") : null;
+    const triggers = Array.from(document.querySelectorAll("[data-pdf-trigger]"));
+
+    if (!overlay || !frame || !closeButton || !triggers.length) {
+      return;
+    }
+
+    const pdfSrc = overlay.getAttribute("data-pdf-src") || frame.getAttribute("src") || "";
+    let hasLoaded = Boolean(frame.getAttribute("src"));
+    let lastActiveElement = null;
+
+    const focusableSelector =
+      'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
+
+    const getFocusableElements = () => {
+      return Array.from(overlay.querySelectorAll(focusableSelector)).filter((el) =>
+        !el.hasAttribute("disabled") && !el.getAttribute("aria-hidden")
+      );
+    };
+
+    const trapFocus = (event) => {
+      if (event.key !== "Tab") {
+        return;
+      }
+
+      const focusable = getFocusableElements();
+      if (!focusable.length) {
+        event.preventDefault();
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey) {
+        if (document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        }
+      } else if (document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    const openOverlay = () => {
+      lastActiveElement = document.activeElement;
+      overlay.hidden = false;
+      if (typeof window.requestAnimationFrame === "function") {
+        window.requestAnimationFrame(() => overlay.classList.add("is-visible"));
+      } else {
+        overlay.classList.add("is-visible");
+      }
+      document.body.style.overflow = "hidden";
+
+      if (!hasLoaded && pdfSrc) {
+        frame.setAttribute("src", pdfSrc);
+        hasLoaded = true;
+      }
+
+      const focusable = getFocusableElements();
+      const target = focusable.find((el) => el.hasAttribute("data-pdf-close")) || focusable[0];
+      if (target && typeof target.focus === "function") {
+        target.focus({ preventScroll: true });
+      }
+
+      overlay.addEventListener("keydown", trapFocus);
+      document.addEventListener("keydown", handleEscape);
+    };
+
+    const closeOverlay = () => {
+      overlay.classList.remove("is-visible");
+      document.body.style.removeProperty("overflow");
+      overlay.removeEventListener("keydown", trapFocus);
+      document.removeEventListener("keydown", handleEscape);
+
+      const handleTransitionEnd = (event) => {
+        if (event.target !== overlay) {
+          return;
+        }
+
+        if (!overlay.classList.contains("is-visible")) {
+          overlay.hidden = true;
+        }
+
+        overlay.removeEventListener("transitionend", handleTransitionEnd);
+      };
+
+      overlay.addEventListener("transitionend", handleTransitionEnd);
+
+      const computed = window.getComputedStyle(overlay);
+      const totalDuration = computed.transitionDuration
+        .split(",")
+        .map((value) => parseFloat(value) || 0)
+        .reduce((sum, value) => sum + value, 0);
+
+      if (!totalDuration) {
+        overlay.hidden = true;
+      }
+
+      if (lastActiveElement && typeof lastActiveElement.focus === "function") {
+        lastActiveElement.focus({ preventScroll: true });
+      }
+    };
+
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        closeOverlay();
+      }
+    };
+
+    triggers.forEach((trigger) => {
+      trigger.addEventListener("click", (event) => {
+        event.preventDefault();
+        openOverlay();
+      });
+    });
+
+    closeButton.addEventListener("click", () => {
+      closeOverlay();
+    });
+
+    overlay.addEventListener("click", (event) => {
+      if (event.target === overlay) {
+        closeOverlay();
+      }
+    });
+  };
+
   const initCadenceCards = () => {
     const cards = Array.from(document.querySelectorAll("[data-card]"));
     if (!cards.length) return;
@@ -494,6 +626,7 @@
     initScrollAnimations();
     initHeroTitleRotator();
     initFormInteractions();
+    initPdfModal();
     initCadenceCards();
   });
 })();

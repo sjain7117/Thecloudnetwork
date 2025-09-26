@@ -24,7 +24,7 @@
           <ul>
             <li><a href="index.html">Home</a></li>
             <li><a href="about.html">About Us</a></li>
-            <li><a href="storyline.html">Storyline</a></li>
+            <!-- <li><a href="storyline.html">Storyline</a></li> -->
             <li><a href="apply.html">Apply</a></li>
           </ul>
         </nav>
@@ -53,8 +53,8 @@
               Network is our space to explore, launch, and celebrate ambitious ideas together.
             </p>
             <div class="hero-actions" data-animate>
-              <a class="button" href="storyline.html">Explore the narrative</a>
-              <a class="button secondary" href="apply.html">Join the network</a>
+              <a class="button" href="assets/pdf/callout.pdf" data-pdf-trigger>Explore the narrative</a>
+              <a class="button secondary" href="assets/pdf/callout.pdf" data-pdf-trigger>Join the network</a>
             </div>
           </div>
           <div class="hero-visual" aria-hidden="true">
@@ -89,7 +89,7 @@
                 curiosity, and intention.
               </p>
             </div>
-            <a class="button secondary" href="storyline.html" data-animate>Read the full story</a>
+            <a class="button secondary" href="storyline.html" data-animate style="display: none">Read the full story</a>
           </div>
 
           <div class="storyline-grid">
@@ -110,37 +110,16 @@
         <div class="section-divider bottom" aria-hidden="true"></div>
       </section>
 
-      <section class="section" aria-labelledby="section-experience">
-        <div class="wrapper split-layout">
-          <article class="offset-panel" data-animate>
-            <h2 id="section-experience" class="section-title">What the experience feels like</h2>
-            <p class="text-muted">
-              The Cloud Network is part studio, part lab, and part stage. We host intentional sprints, curated sessions,
-              and late-night build rituals that push concepts into tangible prototypes.
-            </p>
-            <div class="metrics-grid" style="margin-top: 2.25rem">
-              <div class="metric-card" data-animate>
-                <strong>8</strong>
-                <span>Core builders</span>
-              </div>
-              <div class="metric-card" data-animate>
-                <strong>4</strong>
-                <span>Active projects</span>
-              </div>
-              <div class="metric-card" data-animate>
-                <strong>12</strong>
-                <span>Partner nodes</span>
-              </div>
-            </div>
-          </article>
-          <aside class="callout" data-animate>
-            <h3>Ready to plug into the network?</h3>
+      <section class="section" aria-labelledby="section-ready">
+        <div class="wrapper">
+          <aside class="callout callout-centered" data-animate>
+            <h2 id="section-ready" class="section-title">Ready to plug into the network?</h2>
             <p>
               Applications open this semester. We review interest forms weekly and invite a select crew for interviews and
               build sessions.
             </p>
-            <div style="margin-top: 1.75rem">
-              <a class="button" href="apply.html">Start your application</a>
+            <div class="callout-actions">
+              <a class="button" href="assets/pdf/callout.pdf" data-pdf-trigger>Learn How</a>
             </div>
           </aside>
         </div>
@@ -157,6 +136,26 @@
         </nav>
       </div>
     </footer>
+
+    <div class="pdf-overlay" data-pdf-overlay data-pdf-src="assets/pdf/callout.pdf" hidden>
+      <div class="pdf-modal" role="dialog" aria-modal="true" aria-labelledby="pdf-modal-title">
+        <div class="pdf-frame-wrapper">
+          <header class="pdf-modal-header">
+            <h2 id="pdf-modal-title">Callout Details</h2>
+            <button type="button" class="pdf-close" data-pdf-close aria-label="Close dialog">×</button>
+          </header>
+          <div class="pdf-poster">
+            <iframe
+              src=""
+              title="Callout information"
+              data-pdf-frame
+              loading="lazy"
+              aria-label="Embedded callout details PDF"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
