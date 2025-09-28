@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 400">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0ea5e9" />
+      <stop offset="1" stop-color="#1d4ed8" />
+    </linearGradient>
+    <linearGradient id="jacket" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0f172a" />
+      <stop offset="1" stop-color="#1e293b" />
+    </linearGradient>
+    <linearGradient id="face" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8fafc" />
+      <stop offset="1" stop-color="#cbd5f5" />
+    </linearGradient>
+  </defs>
+  <rect width="320" height="400" fill="url(#bg)" rx="28" />
+  <circle cx="250" cy="90" r="60" fill="rgba(148, 163, 184, 0.28)" />
+  <circle cx="70" cy="72" r="48" fill="rgba(14, 165, 233, 0.28)" />
+  <g transform="translate(80 82)">
+    <ellipse cx="80" cy="78" rx="68" ry="74" fill="url(#face)" />
+    <path d="M24 176c12-38 44-62 80-62s68 24 80 62v74H24z" fill="url(#jacket)" />
+    <path d="M80 118c24 0 54 20 62 42l10 28-144 .2 10-28c8-22 38-42 62-42z" fill="#1f2937" opacity="0.75" />
+    <path d="M80 44c28 0 52 20 52 46s-24 46-52 46-52-20-52-46 24-46 52-46z" fill="#e2e8f0" opacity="0.9" />
+    <path d="M40 64c14-20 42-34 72-32 16 0 28 4 38 10-14-22-38-36-70-36-38 0-68 18-82 46 12-4 26-2 42 12z" fill="#0f172a" opacity="0.85" />
+  </g>
+</svg>
