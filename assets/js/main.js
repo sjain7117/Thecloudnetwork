@@ -78,7 +78,7 @@
       currentIndex = 0;
     }
 
-    currentFace.textContent = phrases[currentIndex];
+    currentFace.innerHTML = phrases[currentIndex];
 
     let nextIndex = (currentIndex + 1) % phrases.length;
     let pendingIndex = nextIndex;
@@ -119,7 +119,7 @@
         let maxHeight = 0;
 
         phrases.forEach((phrase) => {
-          measurement.textContent = phrase;
+          measurement.innerHTML = phrase;
           const rect = measurement.getBoundingClientRect();
           maxWidth = Math.max(maxWidth, rect.width);
           maxHeight = Math.max(maxHeight, rect.height);
@@ -185,10 +185,10 @@
 
     const finalizeFlip = (targetIndex) => {
       currentIndex = targetIndex;
-      currentFace.textContent = phrases[currentIndex];
+      currentFace.innerHTML = phrases[currentIndex];
       isAnimating = false;
       resetStage();
-      nextFace.textContent = "";
+      nextFace.innerHTML = "";
       nextIndex = (currentIndex + 1) % phrases.length;
       pendingIndex = nextIndex;
     };
@@ -209,7 +209,7 @@
       isAnimating = true;
       
       // Pre-populate the next face to avoid layout shifts
-      nextFace.textContent = nextPhrase;
+      nextFace.innerHTML = nextPhrase;
 
       detachTransitionHandler();
       cancelPendingFrame();
