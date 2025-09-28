@@ -112,31 +112,7 @@
       measurement.style.textTransform = computed.textTransform;
       measurement.style.fontFeatureSettings = computed.fontFeatureSettings;
       
-      // Use requestAnimationFrame to avoid layout thrashing on mobile
-      if (typeof window.requestAnimationFrame === "function" && isMobile) {
-        window.requestAnimationFrame(() => {
-          document.body.appendChild(measurement);
-          
-          let maxWidth = 0;
-          let maxHeight = 0;
-
-          phrases.forEach((phrase) => {
-            measurement.textContent = phrase;
-            const rect = measurement.getBoundingClientRect();
-            maxWidth = Math.max(maxWidth, rect.width);
-            maxHeight = Math.max(maxHeight, rect.height);
-          });
-
-          measurement.remove();
-
-          if (maxWidth > 0) {
-            rotator.style.setProperty("--rotator-width", `${Math.ceil(maxWidth)}px`);
-          }
-          if (maxHeight > 0) {
-            rotator.style.setProperty("--rotator-height", `${Math.ceil(maxHeight)}px`);
-          }
-        });
-      } else {
+      const performMeasurement = () => {
         document.body.appendChild(measurement);
         
         let maxWidth = 0;
@@ -151,12 +127,23 @@
 
         measurement.remove();
 
-        if (maxWidth > 0) {
-          rotator.style.setProperty("--rotator-width", `${Math.ceil(maxWidth)}px`);
+        // Get container width to ensure responsiveness
+        const containerWidth = rotator.parentElement?.getBoundingClientRect().width || window.innerWidth;
+        const safeMaxWidth = Math.min(maxWidth, containerWidth * 0.9); // Leave 10% margin
+
+        if (safeMaxWidth > 0) {
+          rotator.style.setProperty("--rotator-width", `${Math.ceil(safeMaxWidth)}px`);
         }
         if (maxHeight > 0) {
           rotator.style.setProperty("--rotator-height", `${Math.ceil(maxHeight)}px`);
         }
+      };
+      
+      // Use requestAnimationFrame to avoid layout thrashing on mobile
+      if (typeof window.requestAnimationFrame === "function" && isMobile) {
+        window.requestAnimationFrame(performMeasurement);
+      } else {
+        performMeasurement();
       }
     };
 
@@ -220,6 +207,8 @@
       }
 
       isAnimating = true;
+      
+      // Pre-populate the next face to avoid layout shifts
       nextFace.textContent = nextPhrase;
 
       detachTransitionHandler();
@@ -233,27 +222,37 @@
         detachTransitionHandler();
         finalizeFlip(targetIndex);
         
-        // Add a small delay on mobile to prevent rapid animations that could cause lag
-        if (isMobile) {
-          setTimeout(scheduleNext, 100);
-        } else {
-          scheduleNext();
-        }
+        // Add a larger delay on mobile to prevent rapid animations that could cause lag
+        const delay = isMobile ? 200 : 50;
+        setTimeout(scheduleNext, delay);
       };
 
       activeTransitionHandler = handleTransitionEnd;
       nextFace.addEventListener("transitionend", handleTransitionEnd);
 
-      if (typeof window.requestAnimationFrame === "function") {
-        pendingFrameId = window.requestAnimationFrame(() => {
-          pendingFrameId = null;
-          if (!isAnimating) {
-            return;
-          }
-          rotator.classList.add("is-animating");
-        });
-      } else {
+      // Use double requestAnimationFrame on mobile for smoother animations
+      const startAnimation = () => {
+        if (!isAnimating) return;
         rotator.classList.add("is-animating");
+      };
+
+      if (typeof window.requestAnimationFrame === "function") {
+        if (isMobile) {
+          // Double RAF for mobile to ensure smooth animation start
+          pendingFrameId = window.requestAnimationFrame(() => {
+            pendingFrameId = window.requestAnimationFrame(() => {
+              pendingFrameId = null;
+              startAnimation();
+            });
+          });
+        } else {
+          pendingFrameId = window.requestAnimationFrame(() => {
+            pendingFrameId = null;
+            startAnimation();
+          });
+        }
+      } else {
+        startAnimation();
       }
     };
 
@@ -326,7 +325,28 @@
     window.addEventListener("resize", handleResize, { passive: true });
     document.addEventListener("visibilitychange", handleVisibilityChange, { passive: true });
 
-    if (!reduceMotion) {
+    // Add intersection observer to pause animations when not visible (mobile optimization)
+    if (isMobile && "IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.target === rotator) {
+              if (entry.isIntersecting && !reduceMotion) {
+                scheduleNext();
+              } else {
+                completeAndPause();
+              }
+            }
+          });
+        },
+        { 
+          threshold: 0.1,
+          rootMargin: "50px 0px"
+        }
+      );
+      
+      observer.observe(rotator);
+    } else if (!reduceMotion) {
       scheduleNext();
     }
   };

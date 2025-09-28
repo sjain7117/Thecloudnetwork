@@ -149,10 +149,12 @@ nav.primary-nav a.active::after {
 .hero-rotator {
   --rotator-duration: 0.82s;
   --rotator-ease: cubic-bezier(0.65, 0, 0.35, 1);
-  --rotator-depth: clamp(12px, calc(var(--rotator-width, 0px) / 2.4), 42px);
+  --rotator-depth: clamp(8px, calc(var(--rotator-width, 0px) / 3), 32px);
   display: inline-block;
   position: relative;
   perspective: 1100px;
+  max-width: 100%;
+  overflow: visible;
 }
 
 .hero-rotator__stage {
@@ -161,9 +163,11 @@ nav.primary-nav a.active::after {
   align-items: baseline;
   justify-items: start;
   min-width: var(--rotator-width, auto);
-  min-height: var(--rotator-height, auto);
+  min-height: var(--rotator-height, 1.2em);
+  max-width: 100%;
   transform-style: preserve-3d;
   transform: translateZ(calc(var(--rotator-depth) * -1));
+  will-change: transform;
 }
 
 .hero-rotator__face {
@@ -172,8 +176,14 @@ nav.primary-nav a.active::after {
   align-items: baseline;
   justify-content: flex-start;
   line-height: inherit;
+  word-break: keep-all;
+  overflow-wrap: normal;
+  white-space: nowrap;
+  max-width: 100%;
   backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
   transform-origin: center;
   transition: transform var(--rotator-duration) var(--rotator-ease),
     opacity var(--rotator-duration) var(--rotator-ease);
@@ -198,6 +208,143 @@ nav.primary-nav a.active::after {
 .hero-rotator.is-animating .hero-rotator__face--back {
   transform: rotateY(0deg) translateZ(var(--rotator-depth));
   opacity: 1;
+}
+
+/* Mobile-first responsive optimizations */
+@media (max-width: 768px) {
+  .hero-rotator {
+    --rotator-duration: 0.6s;
+    --rotator-ease: cubic-bezier(0.4, 0, 0.2, 1);
+    --rotator-depth: clamp(4px, calc(var(--rotator-width, 0px) / 4), 16px);
+    font-size: inherit;
+  }
+  
+  .hero-rotator__stage {
+    transform: translateZ(calc(var(--rotator-depth) * -0.75));
+  }
+  
+  .hero-rotator__face {
+    transform-origin: center center;
+    font-size: inherit;
+    line-height: inherit;
+    /* Use 2D transforms on mobile for better performance */
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  
+  .hero-rotator__face--front {
+    transform: rotateY(0deg) translateZ(calc(var(--rotator-depth) * 0.75));
+  }
+
+  .hero-rotator__face--back {
+    transform: rotateY(-90deg) translateZ(calc(var(--rotator-depth) * 0.75));
+  }
+
+  .hero-rotator.is-animating .hero-rotator__face--front {
+    transform: rotateY(90deg) translateZ(calc(var(--rotator-depth) * 0.75));
+  }
+
+  .hero-rotator.is-animating .hero-rotator__face--back {
+    transform: rotateY(0deg) translateZ(calc(var(--rotator-depth) * 0.75));
+  }
+  
+  /* Ensure hero title remains responsive */
+  .hero-title {
+    font-size: clamp(2rem, 7vw, 2.75rem);
+    line-height: 1.15;
+  }
+}
+
+/* Extra small screens optimization */
+@media (max-width: 480px) {
+  .hero-rotator {
+    --rotator-duration: 0.5s;
+    --rotator-depth: 4px;
+    /* Fallback to 2D on very small screens for maximum performance */
+    perspective: none;
+  }
+  
+  .hero-rotator__stage {
+    transform: none;
+    transform-style: flat;
+    -webkit-transform-style: flat;
+  }
+  
+  .hero-rotator__face {
+    transform-style: flat;
+    -webkit-transform-style: flat;
+  }
+  
+  .hero-rotator__face--front {
+    transform: translateX(0);
+  }
+
+  .hero-rotator__face--back {
+    transform: translateX(100%);
+  }
+
+  .hero-rotator.is-animating .hero-rotator__face--front {
+    transform: translateX(-100%);
+  }
+
+  .hero-rotator.is-animating .hero-rotator__face--back {
+    transform: translateX(0);
+  }
+  
+  .hero-title {
+    font-size: clamp(1.75rem, 8vw, 2.25rem);
+  }
+}
+
+/* High-DPI display optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .hero-rotator__face {
+    /* Improve text rendering on high-DPI screens */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+/* Performance fallback for low-end devices */
+@media (max-width: 320px) {
+  .hero-rotator {
+    /* Completely disable 3D transforms on very small/old devices */
+    perspective: none;
+    --rotator-duration: 0.3s;
+  }
+  
+  .hero-rotator__stage {
+    transform: none;
+    transform-style: flat;
+    -webkit-transform-style: flat;
+  }
+  
+  .hero-rotator__face {
+    transform-style: flat;
+    -webkit-transform-style: flat;
+    transition: opacity var(--rotator-duration) ease;
+  }
+  
+  .hero-rotator__face--front {
+    transform: none;
+    opacity: 1;
+  }
+
+  .hero-rotator__face--back {
+    transform: none;
+    opacity: 0;
+  }
+
+  .hero-rotator.is-animating .hero-rotator__face--front {
+    transform: none;
+    opacity: 0;
+  }
+
+  .hero-rotator.is-animating .hero-rotator__face--back {
+    transform: none;
+    opacity: 1;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
