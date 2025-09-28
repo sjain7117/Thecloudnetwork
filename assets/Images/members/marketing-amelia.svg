@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 400">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#111827" />
+      <stop offset="1" stop-color="#f472b6" />
+    </linearGradient>
+    <linearGradient id="figure" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fdf2f8" />
+      <stop offset="1" stop-color="#fbcfe8" />
+    </linearGradient>
+    <radialGradient id="spark" cx="0.25" cy="0.15" r="0.8">
+      <stop offset="0" stop-color="#f472b6" stop-opacity="0.85" />
+      <stop offset="1" stop-color="#111827" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="320" height="400" rx="28" fill="url(#bg)" />
+  <circle cx="88" cy="96" r="74" fill="url(#spark)" />
+  <path d="M240 56c0 44-36 80-80 80 0-44 36-80 80-80z" fill="rgba(255, 255, 255, 0.12)" />
+  <circle cx="160" cy="132" r="72" fill="#fdecef" />
+  <path d="M92 294c0-60 30-102 68-102s68 42 68 102-30 94-68 94-68-34-68-94z" fill="url(#figure)" />
+  <path d="M160 198c-34 0-60 22-64 58 18 14 40 20 64 20s46-6 64-20c-4-36-30-58-64-58z" fill="#831843" opacity="0.14" />
+  <path d="M124 228c12-16 24-24 36-24s24 8 36 24c-12 8-24 12-36 12s-24-4-36-12z" fill="#9f1239" opacity="0.18" />
+  <rect x="94" y="314" width="132" height="22" rx="11" fill="rgba(15, 23, 42, 0.18)" />
+  <rect x="112" y="342" width="96" height="18" rx="9" fill="rgba(15, 23, 42, 0.24)" />
+</svg>

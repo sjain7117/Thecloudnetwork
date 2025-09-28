@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 400">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1120" />
+      <stop offset="1" stop-color="#a855f7" />
+    </linearGradient>
+    <linearGradient id="figure" x1="0.15" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#ede9fe" />
+      <stop offset="1" stop-color="#ddd6fe" />
+    </linearGradient>
+    <radialGradient id="pulse" cx="0.3" cy="0.2" r="0.8">
+      <stop offset="0" stop-color="#c4b5fd" stop-opacity="0.85" />
+      <stop offset="1" stop-color="#0b1120" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="320" height="400" rx="28" fill="url(#bg)" />
+  <circle cx="86" cy="90" r="76" fill="url(#pulse)" />
+  <rect x="224" y="52" width="70" height="70" rx="22" fill="rgba(255, 255, 255, 0.12)" />
+  <circle cx="160" cy="132" r="70" fill="#f4f1ff" />
+  <path d="M94 288c0-56 30-96 66-96s66 40 66 96-30 98-66 98-66-42-66-98z" fill="url(#figure)" />
+  <path d="M160 194c-32 0-58 22-62 56 18 12 38 18 62 18s44-6 62-18c-4-34-30-56-62-56z" fill="#312e81" opacity="0.12" />
+  <path d="M124 224c12-16 24-24 36-24s24 8 36 24c-12 8-24 12-36 12s-24-4-36-12z" fill="#4338ca" opacity="0.2" />
+  <rect x="96" y="308" width="128" height="22" rx="11" fill="rgba(15, 23, 42, 0.18)" />
+  <rect x="112" y="336" width="100" height="18" rx="9" fill="rgba(15, 23, 42, 0.24)" />
+</svg>
