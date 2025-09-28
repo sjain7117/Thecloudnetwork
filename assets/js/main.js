@@ -48,7 +48,7 @@
     }
 
     const phrasesAttribute = rotator.getAttribute("data-phrases");
-    const initialText = (currentFace.textContent || "").trim();
+    const initialText = (currentFace.innerHTML || "").trim();
     let phrases = [];
 
     if (phrasesAttribute) {
