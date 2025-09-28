@@ -146,6 +146,12 @@ nav.primary-nav a.active::after {
   display: inline-block;
 }
 
+.hero-period {
+  display: block;
+  line-height: 0.8;
+  margin-top: -0.2em;
+}
+
 .hero-rotator {
   --rotator-duration: 0.82s;
   --rotator-ease: cubic-bezier(0.65, 0, 0.35, 1);
