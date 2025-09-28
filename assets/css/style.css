@@ -146,10 +146,17 @@ nav.primary-nav a.active::after {
   display: inline-block;
 }
 
+.hero-title-line {
+  display: inline-block;
+  width: 100%;
+}
+
 .hero-period {
   display: block;
-  line-height: 0.8;
-  margin-top: -0.2em;
+  line-height: 0.6;
+  margin-top: -0.3em;
+  margin-left: 0;
+  font-size: inherit;
 }
 
 .hero-rotator {
