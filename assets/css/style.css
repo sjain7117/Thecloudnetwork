@@ -819,66 +819,25 @@ footer.site-footer {
 }
 
 .cadence-card::after {
-  content: "";
-  position: absolute;
-  inset: 6%;
-  border-radius: calc(var(--card-radius) - 0.25rem);
-  background: radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.16), rgba(56, 189, 248, 0));
-  opacity: 0;
-  transition: opacity 0.45s ease;
-  filter: blur(8px);
-  pointer-events: none;
-  z-index: 1;
+  /* highlight removed */
+  content: none;
 }
 
 .cadence-tracer {
+  /* tracer exists but hidden by default; becomes visible when card is flipped */
   position: absolute;
   inset: 0;
   border-radius: calc(var(--card-radius) + 1.5px);
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.35s ease;
   mix-blend-mode: screen;
   z-index: 3;
+  transition: opacity 220ms ease;
 }
 
-.cadence-tracer::before,
-.cadence-tracer::after {
-  content: "";
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  offset-path: path(
-    "M 6% 6% H 94% A 6% 6% 0 0 1 100% 12% V 88% A 6% 6% 0 0 1 94% 94% H 6% A 6% 6% 0 0 1 0% 88% V 12% A 6% 6% 0 0 1 6% 6% Z"
-  );
-  offset-distance: 0%;
-  offset-rotate: auto;
-  animation: cadenceTracerOrbit var(--cadence-tracer-duration) linear infinite;
-  transform: translate(-50%, -50%);
-  opacity: 0;
-}
-
-.cadence-tracer::before {
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(224, 247, 255, 0.95) 0%, rgba(148, 233, 255, 0.8) 55%, rgba(56, 189, 248, 0.2) 75%, transparent 100%);
-  box-shadow: 0 0 18px rgba(148, 233, 255, 0.75), 0 0 38px rgba(56, 189, 248, 0.4);
-  transition: opacity 0.16s ease;
-}
-
-.cadence-tracer::after {
-  width: 46px;
-  height: 14px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(56, 189, 248, 0) 0%, rgba(148, 233, 255, 0.35) 40%, rgba(224, 247, 255, 0.9) 100%);
-  filter: blur(7px);
-  transform: translate(-92%, -50%);
-  transition: opacity 0.25s ease;
-}
-
+/* If browser doesn't support offset-path, we'll still show a fallback rotated dot when flipped */
 @supports not (offset-path: path("M 0 0")) {
-  .cadence-tracer {
-    display: none;
-  }
+  /* offset-path not supported — fallback animations applied later when flipped */
 }
 
 .cadence-card .card-inner {
@@ -1035,22 +994,23 @@ footer.site-footer {
   margin-top: 0.35rem;
 }
 
-.cadence-card.is-engaged {
+.cadence-card.is-flipped.is-engaged {
+  /* keep engaged visual if card is flipped and engaged */
   box-shadow: 0 32px 72px rgba(10, 20, 40, 0.6);
   filter: brightness(1.02);
 }
 
-.cadence-card.is-engaged::after,
-.cadence-card.is-engaged .card-inner::after {
+.cadence-card.is-flipped.is-engaged::after,
+.cadence-card.is-flipped.is-engaged .card-inner::after {
   opacity: 1;
 }
 
-.cadence-card.is-engaged .cadence-tracer {
+.cadence-card.is-flipped .cadence-tracer {
   opacity: 1;
 }
 
-.cadence-card.is-engaged .cadence-tracer::before,
-.cadence-card.is-engaged .cadence-tracer::after {
+.cadence-card.is-flipped .cadence-tracer::before,
+.cadence-card.is-flipped .cadence-tracer::after {
   opacity: 1;
 }
 
@@ -1333,9 +1293,6 @@ footer.site-footer {
   background: transparent;
   isolation: isolate;
   transform: translateY(0);
-<<<<<<< HEAD
-  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-=======
   transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
@@ -1357,7 +1314,6 @@ footer.site-footer {
   );
   opacity: 0.98;
   transition: opacity 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
->>>>>>> parent of 172cf15 (Fix leadership hover gradient detachment)
 }
 
 .team-card-leader .team-role,
@@ -1387,150 +1343,19 @@ footer.site-footer {
   --leader-lift: -10px;
   --leader-scale: 1.015;
   --leader-shadow: 0 34px 70px -34px rgba(56, 189, 248, 0.82);
-<<<<<<< HEAD
-  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
-    box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-=======
   transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1),
     box-shadow 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
->>>>>>> parent of 172cf15 (Fix leadership hover gradient detachment)
 }
 
 .team-card-leader .team-image,
 .team-card-leader .team-card-info,
 .team-card-leader .team-image img {
-<<<<<<< HEAD
-  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.team-card-leader .team-image {
-  will-change: transform;
-  transform-origin: center bottom;
-}
-
-.team-card-leader .team-image::before {
-  content: "";
-  position: absolute;
-  left: -8%;
-  right: -8%;
-  top: 54%;
-  bottom: -24%;
-  pointer-events: none;
-  z-index: 1;
-  background-image: var(--portrait, none);
-  background-size: cover;
-  background-position: center bottom;
-  background-repeat: no-repeat;
-  transform-origin: center top;
-  transform: translateY(6%) scale(1.12);
-  opacity: 0.92;
-  mask-image: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.95) 0%,
-    rgba(0, 0, 0, 0.7) 28%,
-    rgba(0, 0, 0, 0.38) 58%,
-    rgba(0, 0, 0, 0) 88%
-  );
-  -webkit-mask-image: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.95) 0%,
-    rgba(0, 0, 0, 0.7) 28%,
-    rgba(0, 0, 0, 0.38) 58%,
-    rgba(0, 0, 0, 0) 88%
-  );
-  mask-repeat: no-repeat;
-  -webkit-mask-repeat: no-repeat;
-  transition: opacity 0.42s cubic-bezier(0.25, 0.8, 0.25, 1),
-    transform 0.42s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.team-card-leader .team-image::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 2;
-  background: linear-gradient(
-    to top,
-    rgba(2, 6, 23, 0.95) 0%,
-    rgba(2, 6, 23, 0.9) 20%,
-    rgba(2, 6, 23, 0.76) 38%,
-    rgba(2, 6, 23, 0.52) 58%,
-    rgba(2, 6, 23, 0.28) 76%,
-    rgba(2, 6, 23, 0) 100%
-  );
-  mask-image: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 0.95) 12%,
-    rgba(0, 0, 0, 0.78) 28%,
-    rgba(0, 0, 0, 0.5) 46%,
-    rgba(0, 0, 0, 0.24) 70%,
-    rgba(0, 0, 0, 0) 92%
-  );
-  -webkit-mask-image: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 0.95) 12%,
-    rgba(0, 0, 0, 0.78) 28%,
-    rgba(0, 0, 0, 0.5) 46%,
-    rgba(0, 0, 0, 0.24) 70%,
-    rgba(0, 0, 0, 0) 92%
-  );
-  mask-repeat: no-repeat;
-  -webkit-mask-repeat: no-repeat;
-  opacity: 0.98;
-  transition: opacity 0.42s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.team-card-leader:is(:hover, :focus-visible) .team-image::before {
-  opacity: 0.98;
-  transform: translateY(3%) scale(1.18);
-}
-
-.team-card-leader:is(:hover, :focus-visible) .team-image::after {
-  opacity: 1;
-}
-
-@supports not ((backdrop-filter: blur(0)) or (-webkit-backdrop-filter: blur(0))) {
-  .team-card-leader .team-image::after {
-    background: linear-gradient(
-      to top,
-      rgba(2, 6, 23, 0.9) 0%,
-      rgba(2, 6, 23, 0.82) 18%,
-      rgba(2, 6, 23, 0.62) 38%,
-      rgba(2, 6, 23, 0.4) 60%,
-      rgba(2, 6, 23, 0.18) 80%,
-      rgba(2, 6, 23, 0) 92%
-    );
-  }
-}
-
-@media (max-width: 720px) {
-  .team-card-leader .team-image::before {
-    top: 58%;
-    bottom: -26%;
-    transform: translateY(8%) scale(1.16);
-  }
-}
-
-@media (max-width: 520px) {
-  .team-card-leader .team-image::before {
-    top: 62%;
-    bottom: -30%;
-  }
-=======
   transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
->>>>>>> parent of 172cf15 (Fix leadership hover gradient detachment)
 }
 
 .team-card-leader .team-role,
 .team-card-leader .team-name {
-<<<<<<< HEAD
-  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-=======
   transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
->>>>>>> parent of 172cf15 (Fix leadership hover gradient detachment)
 }
 
 .team-card-leader:is(:hover, :focus-visible) {
@@ -1543,12 +1368,6 @@ footer.site-footer {
 }
 
 .team-card-leader:is(:hover, :focus-visible) .team-card-info {
-<<<<<<< HEAD
-  transform: translateY(0);
-}
-
-.team-card-leader:is(:hover, :focus-visible) .team-image {
-=======
   transform: translateY(-4px);
 }
 
@@ -1557,7 +1376,6 @@ footer.site-footer {
 }
 
 .team-card-leader:is(:hover, :focus-visible) .team-image img {
->>>>>>> parent of 172cf15 (Fix leadership hover gradient detachment)
   transform: translateY(-6px) scale(1.05);
 }
 
