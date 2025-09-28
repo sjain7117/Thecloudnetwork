@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 400">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#38bdf8" />
+      <stop offset="1" stop-color="#0ea5e9" />
+    </linearGradient>
+    <linearGradient id="attire" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1e3a8a" />
+      <stop offset="1" stop-color="#312e81" />
+    </linearGradient>
+    <linearGradient id="face" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fde68a" />
+      <stop offset="1" stop-color="#fbbf24" />
+    </linearGradient>
+  </defs>
+  <rect width="320" height="400" rx="28" fill="url(#bg)" />
+  <circle cx="264" cy="96" r="64" fill="rgba(59, 130, 246, 0.26)" />
+  <circle cx="64" cy="70" r="48" fill="rgba(96, 165, 250, 0.34)" />
+  <g transform="translate(72 84)">
+    <ellipse cx="88" cy="78" rx="68" ry="74" fill="url(#face)" />
+    <path d="M24 170c16-40 48-64 88-64s72 24 88 64v80H24z" fill="url(#attire)" />
+    <path d="M112 120c28 0 64 22 70 46l10 28-184-.4 10-28c6-24 42-46 70-46h14z" fill="#1f2937" opacity="0.7" />
+    <path d="M88 40c28 0 56 22 56 50s-24 50-56 50-56-22-56-50 24-50 56-50z" fill="#fef3c7" opacity="0.92" />
+    <path d="M44 64c14-28 48-46 84-44 24 2 40 10 54 22-16-30-46-48-86-48-46 0-82 26-94 66 16-6 30-4 42 4z" fill="#1e293b" opacity="0.85" />
+  </g>
+</svg>
