@@ -1516,6 +1516,24 @@ footer.site-footer {
   transition: opacity 0.42s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
+.team-card-leader.team-card-leader--vice .team-image img {
+  object-position: 56% center;
+  transform: scale(1.12);
+}
+
+.team-card-leader.team-card-leader--vice .team-image::before {
+  background-position: 56% bottom;
+  transform: translateY(4%) scale(1.2);
+}
+
+.team-card-leader.team-card-leader--vice:is(:hover, :focus-visible) .team-image img {
+  transform: translateY(-6px) scale(1.18);
+}
+
+.team-card-leader.team-card-leader--vice:is(:hover, :focus-visible) .team-image::before {
+  transform: translateY(1%) scale(1.26);
+}
+
 .team-card-leader:is(:hover, :focus-visible) .team-image::before {
   opacity: 0.98;
   transform: translateY(3%) scale(1.18);
@@ -1545,12 +1563,20 @@ footer.site-footer {
     bottom: -26%;
     transform: translateY(8%) scale(1.16);
   }
+
+  .team-card-leader.team-card-leader--vice .team-image::before {
+    transform: translateY(6%) scale(1.24);
+  }
 }
 
 @media (max-width: 520px) {
   .team-card-leader .team-image::before {
     top: 62%;
     bottom: -30%;
+  }
+
+  .team-card-leader.team-card-leader--vice .team-image::before {
+    transform: translateY(8%) scale(1.28);
   }
 =======
   transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
