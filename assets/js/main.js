@@ -83,7 +83,12 @@
     let nextIndex = (currentIndex + 1) % phrases.length;
     let pendingIndex = nextIndex;
 
-    const HOLD_DURATION = 2400;
+    // Detect mobile devices and adjust performance accordingly
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                     ('ontouchstart' in window) || 
+                     (navigator.maxTouchPoints > 0);
+    
+    const HOLD_DURATION = isMobile ? 3200 : 2400; // Longer duration on mobile for better UX
     let timerId = null;
     let isAnimating = false;
     let activeTransitionHandler = null;
@@ -106,25 +111,52 @@
       measurement.style.letterSpacing = computed.letterSpacing;
       measurement.style.textTransform = computed.textTransform;
       measurement.style.fontFeatureSettings = computed.fontFeatureSettings;
-      document.body.appendChild(measurement);
+      
+      // Use requestAnimationFrame to avoid layout thrashing on mobile
+      if (typeof window.requestAnimationFrame === "function" && isMobile) {
+        window.requestAnimationFrame(() => {
+          document.body.appendChild(measurement);
+          
+          let maxWidth = 0;
+          let maxHeight = 0;
 
-      let maxWidth = 0;
-      let maxHeight = 0;
+          phrases.forEach((phrase) => {
+            measurement.textContent = phrase;
+            const rect = measurement.getBoundingClientRect();
+            maxWidth = Math.max(maxWidth, rect.width);
+            maxHeight = Math.max(maxHeight, rect.height);
+          });
 
-      phrases.forEach((phrase) => {
-        measurement.textContent = phrase;
-        const rect = measurement.getBoundingClientRect();
-        maxWidth = Math.max(maxWidth, rect.width);
-        maxHeight = Math.max(maxHeight, rect.height);
-      });
+          measurement.remove();
 
-      measurement.remove();
+          if (maxWidth > 0) {
+            rotator.style.setProperty("--rotator-width", `${Math.ceil(maxWidth)}px`);
+          }
+          if (maxHeight > 0) {
+            rotator.style.setProperty("--rotator-height", `${Math.ceil(maxHeight)}px`);
+          }
+        });
+      } else {
+        document.body.appendChild(measurement);
+        
+        let maxWidth = 0;
+        let maxHeight = 0;
 
-      if (maxWidth > 0) {
-        rotator.style.setProperty("--rotator-width", `${Math.ceil(maxWidth)}px`);
-      }
-      if (maxHeight > 0) {
-        rotator.style.setProperty("--rotator-height", `${Math.ceil(maxHeight)}px`);
+        phrases.forEach((phrase) => {
+          measurement.textContent = phrase;
+          const rect = measurement.getBoundingClientRect();
+          maxWidth = Math.max(maxWidth, rect.width);
+          maxHeight = Math.max(maxHeight, rect.height);
+        });
+
+        measurement.remove();
+
+        if (maxWidth > 0) {
+          rotator.style.setProperty("--rotator-width", `${Math.ceil(maxWidth)}px`);
+        }
+        if (maxHeight > 0) {
+          rotator.style.setProperty("--rotator-height", `${Math.ceil(maxHeight)}px`);
+        }
       }
     };
 
@@ -200,7 +232,13 @@
 
         detachTransitionHandler();
         finalizeFlip(targetIndex);
-        scheduleNext();
+        
+        // Add a small delay on mobile to prevent rapid animations that could cause lag
+        if (isMobile) {
+          setTimeout(scheduleNext, 100);
+        } else {
+          scheduleNext();
+        }
       };
 
       activeTransitionHandler = handleTransitionEnd;
@@ -274,8 +312,19 @@
       });
     }
 
-    window.addEventListener("resize", measureDimensions, { passive: true });
-    document.addEventListener("visibilitychange", handleVisibilityChange);
+    // Throttle resize events on mobile for better performance
+    let resizeTimeout;
+    const handleResize = () => {
+      if (isMobile) {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(measureDimensions, 150);
+      } else {
+        measureDimensions();
+      }
+    };
+    
+    window.addEventListener("resize", handleResize, { passive: true });
+    document.addEventListener("visibilitychange", handleVisibilityChange, { passive: true });
 
     if (!reduceMotion) {
       scheduleNext();
