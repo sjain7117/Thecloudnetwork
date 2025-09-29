@@ -1317,6 +1317,39 @@ footer.site-footer {
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 }
 
+.team-subsections {
+  display: grid;
+  gap: 3rem;
+}
+
+.team-subsection {
+  display: grid;
+  gap: 1.75rem;
+}
+
+.team-subsection-title {
+  margin: 0;
+  font-size: clamp(1.45rem, 2.25vw, 1.7rem);
+  font-weight: 600;
+  letter-spacing: 0.015em;
+}
+
+.team-subsection-description {
+  margin: 0.35rem 0 0;
+  color: var(--text-muted);
+  max-width: 48ch;
+}
+
+@media (max-width: 720px) {
+  .team-subsections {
+    gap: 2.5rem;
+  }
+
+  .team-subsection-title {
+    font-size: clamp(1.3rem, 4vw, 1.45rem);
+  }
+}
+
 .team-card {
   background: rgba(15, 23, 42, 0.88);
   border: 1px solid var(--card-border);
