@@ -906,6 +906,26 @@ footer.site-footer {
   box-shadow: var(--shadow-card);
 }
 
+/* Lift offset panels inside hero areas so they visually align with the first line of the headline.
+   Uses a responsive negative translate to keep alignment across viewports while preserving layout flow. */
+.hero .offset-panel {
+  transform: translateY(-78%); /* move upward relative to its height */
+}
+
+@media (max-width: 1024px) {
+  .hero .offset-panel {
+    transform: translateY(-22%);
+  }
+}
+
+@media (max-width: 720px) {
+  /* On narrow screens stack normally to avoid collisions with long rotated phrases */
+  .hero .offset-panel {
+    transform: translateY(0);
+    margin-top: 1.5rem;
+  }
+}
+
 .offset-panel::before {
   content: "";
   position: absolute;
@@ -1561,15 +1581,16 @@ footer.site-footer {
 }
 
 .team-card-info {
-  position: relative;
-  padding: 1.5rem 1.5rem 1.6rem;
+  /* Move captions on top of the portrait so text remains legible */
+  position: absolute;
+  inset: 0;
+  padding: 1.8rem 1.5rem 1.6rem;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: flex-end;
   gap: 0.45rem;
   z-index: 3;
-  background: var(--bg-secondary);
-  border-top: 1px solid var(--card-border);
+  background: transparent;
   isolation: isolate;
   transform: translateY(0);
   transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -1630,6 +1651,32 @@ footer.site-footer {
 .team-card-leader .team-card-info,
 .team-card-leader .team-image img {
   transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Leader portrait rendering: use a background layer via --portrait so we can add a sheen and mask on top of the image.
+   We keep the <img> in the DOM (opacity: 0) for accessibility but render the visual with ::before. */
+.team-card-leader .team-image {
+  will-change: transform;
+  transform-origin: center bottom;
+  position: relative;
+}
+
+.team-card-leader .team-image {
+  will-change: transform;
+  transform-origin: center bottom;
+  position: relative;
+}
+
+/* Ensure the actual <img> is visible again and used as the visual source */
+.team-card-leader .team-image img {
+  opacity: 1;
+  transition: transform 0.42s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: block;
+}
+
+/* Hover / focus interactions use the real image and the existing ::after overlay for sheen */
+.team-card-leader:is(:hover, :focus-visible) .team-image img {
+  transform: translateY(-6px) scale(1.05);
 }
 
 .team-card-leader .team-role,
