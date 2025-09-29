@@ -1506,6 +1506,12 @@ footer.site-footer {
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 }
 
+@media (min-width: 960px) {
+  .team-grid-members {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
 .team-subsections {
   display: grid;
   gap: 3rem;
