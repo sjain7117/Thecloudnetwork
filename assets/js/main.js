@@ -48,7 +48,7 @@
     }
 
     const phrasesAttribute = rotator.getAttribute("data-phrases");
-    const initialText = (currentFace.textContent || "").trim();
+    const initialText = (currentFace.innerHTML || "").trim();
     let phrases = [];
 
     if (phrasesAttribute) {
@@ -78,12 +78,17 @@
       currentIndex = 0;
     }
 
-    currentFace.textContent = phrases[currentIndex];
+    currentFace.innerHTML = phrases[currentIndex];
 
     let nextIndex = (currentIndex + 1) % phrases.length;
     let pendingIndex = nextIndex;
 
-    const HOLD_DURATION = 2400;
+    // Detect mobile devices and adjust performance accordingly
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                     ('ontouchstart' in window) || 
+                     (navigator.maxTouchPoints > 0);
+    
+    const HOLD_DURATION = isMobile ? 3200 : 2400; // Longer duration on mobile for better UX
     let timerId = null;
     let isAnimating = false;
     let activeTransitionHandler = null;
@@ -106,25 +111,39 @@
       measurement.style.letterSpacing = computed.letterSpacing;
       measurement.style.textTransform = computed.textTransform;
       measurement.style.fontFeatureSettings = computed.fontFeatureSettings;
-      document.body.appendChild(measurement);
+      
+      const performMeasurement = () => {
+        document.body.appendChild(measurement);
+        
+        let maxWidth = 0;
+        let maxHeight = 0;
 
-      let maxWidth = 0;
-      let maxHeight = 0;
+        phrases.forEach((phrase) => {
+          measurement.innerHTML = phrase;
+          const rect = measurement.getBoundingClientRect();
+          maxWidth = Math.max(maxWidth, rect.width);
+          maxHeight = Math.max(maxHeight, rect.height);
+        });
 
-      phrases.forEach((phrase) => {
-        measurement.textContent = phrase;
-        const rect = measurement.getBoundingClientRect();
-        maxWidth = Math.max(maxWidth, rect.width);
-        maxHeight = Math.max(maxHeight, rect.height);
-      });
+        measurement.remove();
 
-      measurement.remove();
+        // Get container width to ensure responsiveness
+        const containerWidth = rotator.parentElement?.getBoundingClientRect().width || window.innerWidth;
+        const safeMaxWidth = Math.min(maxWidth, containerWidth * 0.9); // Leave 10% margin
 
-      if (maxWidth > 0) {
-        rotator.style.setProperty("--rotator-width", `${Math.ceil(maxWidth)}px`);
-      }
-      if (maxHeight > 0) {
-        rotator.style.setProperty("--rotator-height", `${Math.ceil(maxHeight)}px`);
+        if (safeMaxWidth > 0) {
+          rotator.style.setProperty("--rotator-width", `${Math.ceil(safeMaxWidth)}px`);
+        }
+        if (maxHeight > 0) {
+          rotator.style.setProperty("--rotator-height", `${Math.ceil(maxHeight)}px`);
+        }
+      };
+      
+      // Use requestAnimationFrame to avoid layout thrashing on mobile
+      if (typeof window.requestAnimationFrame === "function" && isMobile) {
+        window.requestAnimationFrame(performMeasurement);
+      } else {
+        performMeasurement();
       }
     };
 
@@ -166,10 +185,10 @@
 
     const finalizeFlip = (targetIndex) => {
       currentIndex = targetIndex;
-      currentFace.textContent = phrases[currentIndex];
+      currentFace.innerHTML = phrases[currentIndex];
       isAnimating = false;
       resetStage();
-      nextFace.textContent = "";
+      nextFace.innerHTML = "";
       nextIndex = (currentIndex + 1) % phrases.length;
       pendingIndex = nextIndex;
     };
@@ -188,7 +207,9 @@
       }
 
       isAnimating = true;
-      nextFace.textContent = nextPhrase;
+      
+      // Pre-populate the next face to avoid layout shifts
+      nextFace.innerHTML = nextPhrase;
 
       detachTransitionHandler();
       cancelPendingFrame();
@@ -200,22 +221,38 @@
 
         detachTransitionHandler();
         finalizeFlip(targetIndex);
-        scheduleNext();
+        
+        // Add a larger delay on mobile to prevent rapid animations that could cause lag
+        const delay = isMobile ? 200 : 50;
+        setTimeout(scheduleNext, delay);
       };
 
       activeTransitionHandler = handleTransitionEnd;
       nextFace.addEventListener("transitionend", handleTransitionEnd);
 
-      if (typeof window.requestAnimationFrame === "function") {
-        pendingFrameId = window.requestAnimationFrame(() => {
-          pendingFrameId = null;
-          if (!isAnimating) {
-            return;
-          }
-          rotator.classList.add("is-animating");
-        });
-      } else {
+      // Use double requestAnimationFrame on mobile for smoother animations
+      const startAnimation = () => {
+        if (!isAnimating) return;
         rotator.classList.add("is-animating");
+      };
+
+      if (typeof window.requestAnimationFrame === "function") {
+        if (isMobile) {
+          // Double RAF for mobile to ensure smooth animation start
+          pendingFrameId = window.requestAnimationFrame(() => {
+            pendingFrameId = window.requestAnimationFrame(() => {
+              pendingFrameId = null;
+              startAnimation();
+            });
+          });
+        } else {
+          pendingFrameId = window.requestAnimationFrame(() => {
+            pendingFrameId = null;
+            startAnimation();
+          });
+        }
+      } else {
+        startAnimation();
       }
     };
 
@@ -274,10 +311,42 @@
       });
     }
 
-    window.addEventListener("resize", measureDimensions, { passive: true });
-    document.addEventListener("visibilitychange", handleVisibilityChange);
+    // Throttle resize events on mobile for better performance
+    let resizeTimeout;
+    const handleResize = () => {
+      if (isMobile) {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(measureDimensions, 150);
+      } else {
+        measureDimensions();
+      }
+    };
+    
+    window.addEventListener("resize", handleResize, { passive: true });
+    document.addEventListener("visibilitychange", handleVisibilityChange, { passive: true });
 
-    if (!reduceMotion) {
+    // Add intersection observer to pause animations when not visible (mobile optimization)
+    if (isMobile && "IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.target === rotator) {
+              if (entry.isIntersecting && !reduceMotion) {
+                scheduleNext();
+              } else {
+                completeAndPause();
+              }
+            }
+          });
+        },
+        { 
+          threshold: 0.1,
+          rootMargin: "50px 0px"
+        }
+      );
+      
+      observer.observe(rotator);
+    } else if (!reduceMotion) {
       scheduleNext();
     }
   };
