@@ -367,6 +367,22 @@ nav.primary-nav a.active::after {
   max-width: 32ch;
 }
 
+/* Full stop divider between headline and subtitle. Separate element so it doesn't flow with rotating text. */
+
+.hero-fullstop {
+  display: block; /* force own line between title and subtitle */
+  /* keep visual appearance identical to original punctuation: inherit font and color from headline */
+  /* Match the hero title sizing so the full stop is identical to apply page */
+  font-size: clamp(2.75rem, 5vw, 3.8rem);
+  color: inherit;
+  margin: 0.6rem 0 0 0; /* vertical spacing; left aligned with headline */
+  line-height: 1.1;
+  font-weight: 700;
+  width: auto;
+  text-align: left; /* align to the same left edge as the headline */
+  pointer-events: none; /* decorative */
+}
+
 .hero-actions {
   margin-top: 2.5rem;
   display: flex;
@@ -1498,6 +1514,14 @@ footer.site-footer {
     gap: 2.5rem;
   }
 
+
+    /* On smaller screens keep the fullstop between blocks and size it appropriately */
+    .hero-fullstop {
+      font-size: clamp(2rem, 7vw, 2.75rem);
+      margin: 0.5rem 0 0 0;
+      display: block;
+      text-align: left;
+    }
   .team-subsection-title {
     font-size: clamp(1.3rem, 4vw, 1.45rem);
   }
